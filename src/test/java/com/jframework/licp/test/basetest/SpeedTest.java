@@ -2,24 +2,19 @@ package com.jframework.licp.test.basetest;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
-import java.util.IdentityHashMap;
 import org.junit.Test;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.kryo.util.IdentityObjectIntMap;
 import com.jfireframework.baseutil.code.RandomString;
 import com.jfireframework.baseutil.collection.buffer.ByteBuf;
 import com.jfireframework.baseutil.collection.buffer.HeapByteBuf;
-import com.jfireframework.baseutil.collection.buffer.HeapByteBufPool;
 import com.jfireframework.baseutil.simplelog.ConsoleLogFactory;
 import com.jfireframework.baseutil.simplelog.Logger;
 import com.jfireframework.baseutil.time.Timewatch;
 import com.jfireframework.licp.InternalLicp;
-import com.jframework.licp.test.basetest.data.BaseData;
 import com.jframework.licp.test.basetest.data.Device;
 import com.jframework.licp.test.basetest.data.Person;
-import com.jframework.licp.test.basetest.data.SpeedData;
 import com.jframework.licp.test.basetest.data.SpeedData2;
 import com.jframework.licp.test.basetest.data.WrapData;
 

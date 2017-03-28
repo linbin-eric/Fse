@@ -4,20 +4,18 @@ import java.util.Date;
 import org.junit.Test;
 import com.jfireframework.baseutil.code.RandomString;
 import com.jfireframework.baseutil.collection.buffer.ByteBuf;
-import com.jfireframework.baseutil.collection.buffer.HeapByteBufPool;
+import com.jfireframework.baseutil.collection.buffer.HeapByteBuf;
 import com.jfireframework.baseutil.simplelog.ConsoleLogFactory;
 import com.jfireframework.baseutil.simplelog.Logger;
 import com.jfireframework.licp.InternalLicp;
 import com.jframework.licp.test.basetest.data.Device;
-import com.jframework.licp.test.basetest.data.SpeedData;
 import com.jframework.licp.test.basetest.data.SpeedData2;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 
 public class PerTest
 {
     private Logger     logger  = ConsoleLogFactory.getLogger(ConsoleLogFactory.DEBUG);
     public static int  testSum = 100000000;
-    private ByteBuf<?> buf     = HeapByteBufPool.getInstance().get(100);
+    private ByteBuf<?> buf     = HeapByteBuf.allocate(100);
     
     private Device Builder()
     {

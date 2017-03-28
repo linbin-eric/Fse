@@ -12,7 +12,6 @@ import com.jfire.framework.ex.test.rule.CustomRule;
 import com.jfireframework.baseutil.StringUtil;
 import com.jfireframework.baseutil.collection.buffer.ByteBuf;
 import com.jfireframework.baseutil.collection.buffer.HeapByteBuf;
-import com.jfireframework.baseutil.collection.buffer.HeapByteBufPool;
 import com.jfireframework.baseutil.encrypt.AesUtil;
 import com.jfireframework.licp.InternalLicp;
 import com.jframework.licp.test.basetest.data.ArrayData;
@@ -23,7 +22,7 @@ import com.jframework.licp.test.basetest.data.WrapData;
 
 public class RightTest
 {
-    ByteBuf<?>        buf  = HeapByteBufPool.getInstance().get(100);
+    ByteBuf<?>        buf  = HeapByteBuf.allocate(100);
     
     @Rule
     public CustomRule rule = new CustomRule();
