@@ -2,7 +2,7 @@ package com.jframework.licp.test.basetest.data;
 
 import java.util.Date;
 import java.util.Random;
-import com.jfireframework.baseutil.code.RandomString;
+import com.jframework.licp.test.basetest.RandomString;
 
 public class BaseData
 {

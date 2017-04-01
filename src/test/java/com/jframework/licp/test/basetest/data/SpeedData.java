@@ -1,7 +1,7 @@
 package com.jframework.licp.test.basetest.data;
 
 import java.util.Date;
-import com.jfireframework.baseutil.code.RandomString;
+import com.jframework.licp.test.basetest.RandomString;
 
 public class SpeedData
 {

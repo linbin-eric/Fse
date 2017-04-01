@@ -2,7 +2,6 @@ package com.jframework.licp.test.basetest;
 
 import java.util.Date;
 import org.junit.Test;
-import com.jfireframework.baseutil.code.RandomString;
 import com.jfireframework.baseutil.collection.buffer.ByteBuf;
 import com.jfireframework.baseutil.collection.buffer.HeapByteBuf;
 import com.jfireframework.baseutil.simplelog.ConsoleLogFactory;
