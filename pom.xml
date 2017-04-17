@@ -8,7 +8,7 @@
 	</parent>
 	<packaging>jar</packaging>
 	<artifactId>licp</artifactId>
-	<version>1.0</version>
+	<version>1.0-SNAPSHOT</version>
 	<name>licp</name>
 	<url>http://maven.apache.org</url>
 	<properties>
