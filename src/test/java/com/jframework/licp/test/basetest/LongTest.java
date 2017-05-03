@@ -2,20 +2,20 @@ package com.jframework.licp.test.basetest;
 
 import java.io.UnsupportedEncodingException;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
 import com.jfireframework.baseutil.StringUtil;
 import com.jfireframework.baseutil.collection.buffer.ByteBuf;
 import com.jfireframework.baseutil.collection.buffer.HeapByteBuf;
-import com.jfireframework.baseutil.simplelog.ConsoleLogFactory;
-import com.jfireframework.baseutil.simplelog.Logger;
 import com.jfireframework.licp.InternalLicp;
 import com.jframework.licp.test.basetest.data.BaseData;
 import com.jframework.licp.test.basetest.data.LongData;
 
 public class LongTest
 {
-    private Logger logger = ConsoleLogFactory.getLogger(ConsoleLogFactory.DEBUG);
+    private Logger logger = LoggerFactory.getLogger(LongTest.class);
     
     @Test
     public void longtest() throws IllegalArgumentException, IllegalAccessException, UnsupportedEncodingException, ClassNotFoundException, InstantiationException

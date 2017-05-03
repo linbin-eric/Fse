@@ -3,13 +3,13 @@ package com.jframework.licp.test.basetest;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.jfireframework.baseutil.collection.buffer.ByteBuf;
 import com.jfireframework.baseutil.collection.buffer.HeapByteBuf;
-import com.jfireframework.baseutil.simplelog.ConsoleLogFactory;
-import com.jfireframework.baseutil.simplelog.Logger;
 import com.jfireframework.baseutil.time.Timewatch;
 import com.jfireframework.licp.InternalLicp;
 import com.jframework.licp.test.basetest.data.Device;
@@ -19,7 +19,7 @@ import com.jframework.licp.test.basetest.data.WrapData;
 
 public class SpeedTest
 {
-    private Logger     logger  = ConsoleLogFactory.getLogger(ConsoleLogFactory.DEBUG);
+    private Logger     logger  = LoggerFactory.getLogger(SpeedTest.class);
     public static int  testSum = 1000;
     private ByteBuf<?> buf     = HeapByteBuf.allocate(4096);
     
@@ -99,7 +99,6 @@ public class SpeedTest
         
     }
     
- 
     @Test
     public void ser2()
     {
