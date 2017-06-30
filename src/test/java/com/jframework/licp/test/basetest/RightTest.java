@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import com.jfire.framework.ex.test.rule.CustomRule;
 import com.jfireframework.baseutil.StringUtil;
 import com.jfireframework.baseutil.collection.buffer.ByteBuf;
 import com.jfireframework.baseutil.collection.buffer.HeapByteBuf;
@@ -22,10 +20,7 @@ import com.jframework.licp.test.basetest.data.WrapData;
 
 public class RightTest
 {
-    ByteBuf<?>        buf  = HeapByteBuf.allocate(100);
-    
-    @Rule
-    public CustomRule rule = new CustomRule();
+    ByteBuf<?> buf = HeapByteBuf.allocate(100);
     
     /**
      * 测试是否能够正确的反序列化
