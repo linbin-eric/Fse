@@ -1,9 +1,10 @@
 package com.jframework.licp.test.basetest;
 
 import static org.junit.Assert.*;
+
+import com.jfireframework.licp.buf.ByteBuf;
+import com.jfireframework.licp.buf.HeapByteBuf;
 import org.junit.Test;
-import com.jfireframework.baseutil.collection.buffer.ByteBuf;
-import com.jfireframework.baseutil.collection.buffer.HeapByteBuf;
 import com.jfireframework.licp.InternalLicp;
 
 public class SimpleTest
@@ -16,7 +17,7 @@ public class SimpleTest
         person.setAge(27);
         person.setWeight(15.65f);
         InternalLicp licp = new InternalLicp();
-        ByteBuf<?> buf = HeapByteBuf.allocate(100);
+        ByteBuf<?>   buf  = HeapByteBuf.allocate(100);
         licp.serialize(person, buf);
         Person result = (Person) licp.deserialize(buf);
         assertTrue(person.equals(result));

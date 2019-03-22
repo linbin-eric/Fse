@@ -1,8 +1,9 @@
 package com.jfireframework.licp.field;
 
-import java.nio.ByteBuffer;
-import com.jfireframework.baseutil.collection.buffer.ByteBuf;
 import com.jfireframework.licp.InternalLicp;
+import com.jfireframework.licp.buf.ByteBuf;
+
+import java.nio.ByteBuffer;
 
 public interface CacheField
 {

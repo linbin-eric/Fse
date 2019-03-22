@@ -1,10 +1,12 @@
 package com.jfireframework.licp.field.impl;
 
+import com.jfireframework.baseutil.reflect.UNSAFE;
+import com.jfireframework.licp.InternalLicp;
+import com.jfireframework.licp.buf.ByteBuf;
+import com.jfireframework.licp.interceptor.LicpFieldInterceptor;
+
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
-import com.jfireframework.baseutil.collection.buffer.ByteBuf;
-import com.jfireframework.licp.InternalLicp;
-import com.jfireframework.licp.interceptor.LicpFieldInterceptor;
 
 public class BooleanField extends AbstractCacheField
 {
@@ -17,7 +19,7 @@ public class BooleanField extends AbstractCacheField
     @Override
     public void write(Object holder, ByteBuf<?> buf, InternalLicp licp)
     {
-        boolean value = unsafe.getBoolean(holder, offset);
+        boolean value = UNSAFE.getBoolean(holder, offset);
         if (fieldInterceptor != null)
         {
             value = fieldInterceptor.serializeBoolean(value);
@@ -40,7 +42,7 @@ public class BooleanField extends AbstractCacheField
         {
             value = fieldInterceptor.deserializeBoolean(value);
         }
-        unsafe.putBoolean(holder, offset, value);
+        UNSAFE.putBoolean(holder, offset, value);
     }
     
     @Override
@@ -51,7 +53,7 @@ public class BooleanField extends AbstractCacheField
         {
             value = fieldInterceptor.deserializeBoolean(value);
         }
-        unsafe.putBoolean(holder, offset, value);
+        UNSAFE.putBoolean(holder, offset, value);
     }
     
 }

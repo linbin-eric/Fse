@@ -1,46 +1,11 @@
 package com.jfireframework.licp.serializer;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import com.jfireframework.licp.InternalLicp;
-import com.jfireframework.licp.serializer.array.BooleanArraySerializer;
-import com.jfireframework.licp.serializer.array.ByteArraySerializer;
-import com.jfireframework.licp.serializer.array.CharArraySerializer;
-import com.jfireframework.licp.serializer.array.DoubleArraySerializer;
-import com.jfireframework.licp.serializer.array.FloatArraySerializer;
-import com.jfireframework.licp.serializer.array.IntArraySerializer;
-import com.jfireframework.licp.serializer.array.IntegerArraySerializer;
-import com.jfireframework.licp.serializer.array.LongArraySerializer;
-import com.jfireframework.licp.serializer.array.ObjectArraySerializer;
-import com.jfireframework.licp.serializer.array.ShortArraySerializer;
-import com.jfireframework.licp.serializer.array.StringArraySerializer;
-import com.jfireframework.licp.serializer.array.WBooleanArraySerializer;
-import com.jfireframework.licp.serializer.array.WByteArraySerializer;
-import com.jfireframework.licp.serializer.array.WCharArraySerializer;
-import com.jfireframework.licp.serializer.array.WDoubleArraySerializer;
-import com.jfireframework.licp.serializer.array.WFloatArraySerializer;
-import com.jfireframework.licp.serializer.array.WLongArraySerializer;
-import com.jfireframework.licp.serializer.array.WShortArraySerializer;
-import com.jfireframework.licp.serializer.base.BooleanSerializer;
-import com.jfireframework.licp.serializer.base.ByteSerializer;
-import com.jfireframework.licp.serializer.base.CharSerializer;
-import com.jfireframework.licp.serializer.base.DoubleSerializer;
-import com.jfireframework.licp.serializer.base.FloatSerializer;
-import com.jfireframework.licp.serializer.base.IntegerSerializer;
-import com.jfireframework.licp.serializer.base.LongSerializer;
-import com.jfireframework.licp.serializer.base.ShortSerializer;
-import com.jfireframework.licp.serializer.base.StringSerializer;
-import com.jfireframework.licp.serializer.extra.ArraylistSerializer;
-import com.jfireframework.licp.serializer.extra.CalendarSerializer;
-import com.jfireframework.licp.serializer.extra.HashMapSerializer;
-import com.jfireframework.licp.serializer.extra.HashSetSerializer;
-import com.jfireframework.licp.serializer.extra.LinkedListSerializer;
-import com.jfireframework.licp.serializer.extra.SqlDateSerializer;
-import com.jfireframework.licp.serializer.extra.UtilDateSerializer;
+import com.jfireframework.licp.serializer.array.*;
+import com.jfireframework.licp.serializer.base.*;
+import com.jfireframework.licp.serializer.extra.*;
+
+import java.util.*;
 
 public class SerializerFactory
 {

@@ -1,11 +1,12 @@
 package com.jfireframework.licp.serializer.array;
 
-import java.lang.reflect.Array;
-import java.nio.ByteBuffer;
-import com.jfireframework.baseutil.collection.buffer.ByteBuf;
 import com.jfireframework.licp.InternalLicp;
+import com.jfireframework.licp.buf.ByteBuf;
 import com.jfireframework.licp.serializer.LicpSerializer;
 import com.jfireframework.licp.util.BufferUtil;
+
+import java.lang.reflect.Array;
+import java.nio.ByteBuffer;
 
 public class ObjectArraySerializer<T> extends AbstractArraySerializer<T>
 {

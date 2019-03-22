@@ -1,11 +1,13 @@
 package com.jfireframework.licp.field.impl;
 
-import java.lang.reflect.Field;
-import java.nio.ByteBuffer;
-import com.jfireframework.baseutil.collection.buffer.ByteBuf;
+import com.jfireframework.baseutil.reflect.UNSAFE;
 import com.jfireframework.licp.InternalLicp;
+import com.jfireframework.licp.buf.ByteBuf;
 import com.jfireframework.licp.interceptor.LicpFieldInterceptor;
 import com.jfireframework.licp.util.BufferUtil;
+
+import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
 
 public class WCharField extends AbstractCacheField
 {
@@ -18,7 +20,7 @@ public class WCharField extends AbstractCacheField
     @Override
     public void write(Object holder, ByteBuf<?> buf, InternalLicp licp)
     {
-        Character character = (Character) unsafe.getObject(holder, offset);
+        Character character = (Character) UNSAFE.getObject(holder, offset);
         if (fieldInterceptor != null)
         {
             character = fieldInterceptor.serialize(character);
@@ -51,7 +53,7 @@ public class WCharField extends AbstractCacheField
         {
             value = fieldInterceptor.deserialize(value);
         }
-        unsafe.putObject(holder, offset, value);
+        UNSAFE.putObject(holder, offset, value);
     }
     
     @Override
@@ -66,13 +68,13 @@ public class WCharField extends AbstractCacheField
         else
         {
             value = BufferUtil.readChar(buf);
-            unsafe.putObject(holder, offset, value);
+            UNSAFE.putObject(holder, offset, value);
         }
         if (fieldInterceptor != null)
         {
             value = fieldInterceptor.deserialize(value);
         }
-        unsafe.putObject(holder, offset, value);
+        UNSAFE.putObject(holder, offset, value);
     }
     
 }

@@ -1,11 +1,13 @@
 package com.jfireframework.licp.field.impl;
 
-import java.lang.reflect.Field;
-import java.nio.ByteBuffer;
-import com.jfireframework.baseutil.collection.buffer.ByteBuf;
+import com.jfireframework.baseutil.reflect.UNSAFE;
 import com.jfireframework.licp.InternalLicp;
+import com.jfireframework.licp.buf.ByteBuf;
 import com.jfireframework.licp.interceptor.LicpFieldInterceptor;
 import com.jfireframework.licp.util.BufferUtil;
+
+import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
 
 public class FloatField extends AbstractCacheField
 {
@@ -18,7 +20,7 @@ public class FloatField extends AbstractCacheField
     @Override
     public void write(Object holder, ByteBuf<?> buf, InternalLicp licp)
     {
-        float value = unsafe.getFloat(holder, offset);
+        float value = UNSAFE.getFloat(holder, offset);
         if (fieldInterceptor != null)
         {
             value = fieldInterceptor.serializeFloat(value);
@@ -34,7 +36,7 @@ public class FloatField extends AbstractCacheField
         {
             value = fieldInterceptor.deserializeFloat(value);
         }
-        unsafe.putFloat(holder, offset, value);
+        UNSAFE.putFloat(holder, offset, value);
     }
     
     @Override
@@ -45,7 +47,7 @@ public class FloatField extends AbstractCacheField
         {
             value = fieldInterceptor.deserializeFloat(value);
         }
-        unsafe.putFloat(holder, offset, value);
+        UNSAFE.putFloat(holder, offset, value);
     }
     
 }

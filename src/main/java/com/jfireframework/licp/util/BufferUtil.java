@@ -1,7 +1,8 @@
 package com.jfireframework.licp.util;
 
-import java.nio.ByteBuffer;
 import com.jfireframework.baseutil.exception.UnSupportException;
+
+import java.nio.ByteBuffer;
 
 public class BufferUtil
 {

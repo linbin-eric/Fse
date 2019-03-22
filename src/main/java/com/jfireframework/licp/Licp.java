@@ -1,8 +1,9 @@
 package com.jfireframework.licp;
 
-import java.nio.ByteBuffer;
-import com.jfireframework.baseutil.collection.buffer.ByteBuf;
+import com.jfireframework.licp.buf.ByteBuf;
 import com.jfireframework.licp.interceptor.LicpFieldInterceptor;
+
+import java.nio.ByteBuffer;
 
 public class Licp
 {

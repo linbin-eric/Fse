@@ -1,11 +1,13 @@
 package com.jfireframework.licp.field.impl;
 
+import com.jfireframework.baseutil.exception.UnSupportException;
+import com.jfireframework.baseutil.reflect.UNSAFE;
+import com.jfireframework.licp.InternalLicp;
+import com.jfireframework.licp.buf.ByteBuf;
+import com.jfireframework.licp.interceptor.LicpFieldInterceptor;
+
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
-import com.jfireframework.baseutil.collection.buffer.ByteBuf;
-import com.jfireframework.baseutil.exception.UnSupportException;
-import com.jfireframework.licp.InternalLicp;
-import com.jfireframework.licp.interceptor.LicpFieldInterceptor;
 
 public class WBooleanField extends AbstractCacheField
 {
@@ -18,7 +20,7 @@ public class WBooleanField extends AbstractCacheField
     @Override
     public void write(Object holder, ByteBuf<?> buf, InternalLicp licp)
     {
-        Boolean value = (Boolean) unsafe.getObject(holder, offset);
+        Boolean value = (Boolean) UNSAFE.getObject(holder, offset);
         if (fieldInterceptor != null)
         {
             value = fieldInterceptor.serialize(value);
@@ -66,7 +68,7 @@ public class WBooleanField extends AbstractCacheField
         {
             value = fieldInterceptor.deserialize(value);
         }
-        unsafe.putObject(holder, offset, value);
+        UNSAFE.putObject(holder, offset, value);
     }
     
     @Override
@@ -94,7 +96,7 @@ public class WBooleanField extends AbstractCacheField
         {
             value = fieldInterceptor.deserialize(value);
         }
-        unsafe.putObject(holder, offset, value);
+        UNSAFE.putObject(holder, offset, value);
     }
     
 }

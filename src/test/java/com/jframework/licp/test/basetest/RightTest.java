@@ -5,10 +5,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
+
+import com.jfireframework.licp.buf.ByteBuf;
+import com.jfireframework.licp.buf.HeapByteBuf;
 import org.junit.Assert;
 import org.junit.Test;
-import com.jfireframework.baseutil.collection.buffer.ByteBuf;
-import com.jfireframework.baseutil.collection.buffer.HeapByteBuf;
 import com.jfireframework.baseutil.encrypt.AesUtil;
 import com.jfireframework.licp.InternalLicp;
 import com.jframework.licp.test.basetest.data.ArrayData;

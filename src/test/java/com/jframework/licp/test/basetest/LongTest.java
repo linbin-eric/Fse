@@ -1,14 +1,15 @@
 package com.jframework.licp.test.basetest;
 
 import java.io.UnsupportedEncodingException;
+
+import com.jfireframework.licp.buf.ByteBuf;
+import com.jfireframework.licp.buf.HeapByteBuf;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
 import com.jfireframework.baseutil.StringUtil;
-import com.jfireframework.baseutil.collection.buffer.ByteBuf;
-import com.jfireframework.baseutil.collection.buffer.HeapByteBuf;
 import com.jfireframework.licp.InternalLicp;
 import com.jframework.licp.test.basetest.data.BaseData;
 import com.jframework.licp.test.basetest.data.LongData;
@@ -28,7 +29,7 @@ public class LongTest
         byte[] bb = output.toBytes();
         logger.info("LongData序列化：kryo基础数据长度：{}", bb.length);
         InternalLicp lbse = new InternalLicp();
-        ByteBuf<?> buf = HeapByteBuf.allocate(100);
+        ByteBuf<?>   buf  = HeapByteBuf.allocate(100);
         lbse.serialize(new LongData(), buf);
         logger.info("LongData序列化：lbse基础数据长度：" + buf.writeIndex());
         logger.info("序列化长度减少{}", (bb.length - buf.writeIndex()));

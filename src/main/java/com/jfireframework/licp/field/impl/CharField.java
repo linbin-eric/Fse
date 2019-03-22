@@ -1,11 +1,13 @@
 package com.jfireframework.licp.field.impl;
 
-import java.lang.reflect.Field;
-import java.nio.ByteBuffer;
-import com.jfireframework.baseutil.collection.buffer.ByteBuf;
+import com.jfireframework.baseutil.reflect.UNSAFE;
 import com.jfireframework.licp.InternalLicp;
+import com.jfireframework.licp.buf.ByteBuf;
 import com.jfireframework.licp.interceptor.LicpFieldInterceptor;
 import com.jfireframework.licp.util.BufferUtil;
+
+import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
 
 public class CharField extends AbstractCacheField
 {
@@ -18,7 +20,7 @@ public class CharField extends AbstractCacheField
     @Override
     public void write(Object holder, ByteBuf<?> buf, InternalLicp licp)
     {
-        char c = unsafe.getChar(holder, offset);
+        char c = UNSAFE.getChar(holder, offset);
         if (fieldInterceptor != null)
         {
             c = fieldInterceptor.serializeChar(c);
@@ -34,7 +36,7 @@ public class CharField extends AbstractCacheField
         {
             c = fieldInterceptor.deserializeChar(c);
         }
-        unsafe.putChar(holder, offset, c);
+        UNSAFE.putChar(holder, offset, c);
     }
     
     @Override
@@ -45,7 +47,7 @@ public class CharField extends AbstractCacheField
         {
             c = fieldInterceptor.deserializeChar(c);
         }
-        unsafe.putChar(holder, offset, c);
+        UNSAFE.putChar(holder, offset, c);
     }
     
 }

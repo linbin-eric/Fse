@@ -1,34 +1,19 @@
 package com.jfireframework.licp.field;
 
+import com.jfireframework.baseutil.reflect.ReflectUtil;
+import com.jfireframework.licp.InternalLicp;
+import com.jfireframework.licp.field.impl.*;
+import com.jfireframework.licp.interceptor.LicpFieldInterceptor;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import com.jfireframework.baseutil.exception.JustThrowException;
-import com.jfireframework.licp.InternalLicp;
-import com.jfireframework.licp.field.impl.BooleanField;
-import com.jfireframework.licp.field.impl.ByteField;
-import com.jfireframework.licp.field.impl.CharField;
-import com.jfireframework.licp.field.impl.DoubleField;
-import com.jfireframework.licp.field.impl.FloatField;
-import com.jfireframework.licp.field.impl.IntField;
-import com.jfireframework.licp.field.impl.IntegerField;
-import com.jfireframework.licp.field.impl.LongField;
-import com.jfireframework.licp.field.impl.ObjectField;
-import com.jfireframework.licp.field.impl.ShortField;
-import com.jfireframework.licp.field.impl.StringField;
-import com.jfireframework.licp.field.impl.WBooleanField;
-import com.jfireframework.licp.field.impl.WByteField;
-import com.jfireframework.licp.field.impl.WCharField;
-import com.jfireframework.licp.field.impl.WDoubleField;
-import com.jfireframework.licp.field.impl.WFloatField;
-import com.jfireframework.licp.field.impl.WShortField;
-import com.jfireframework.licp.field.impl.WlongField;
-import com.jfireframework.licp.interceptor.LicpFieldInterceptor;
 
 public class FieldFactory
 {
     private static final Map<Class<?>, Constructor<? extends CacheField>> map = new HashMap<Class<?>, Constructor<? extends CacheField>>();
+
     static
     {
         try
@@ -50,32 +35,28 @@ public class FieldFactory
             map.put(Short.class, WShortField.class.getConstructor(Field.class, LicpFieldInterceptor.class));
             map.put(Double.class, WDoubleField.class.getConstructor(Field.class, LicpFieldInterceptor.class));
             map.put(String.class, StringField.class.getConstructor(Field.class, LicpFieldInterceptor.class));
-            
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
-            throw new JustThrowException(e);
+            ReflectUtil.throwException(e);
         }
     }
-    
+
     public static final CacheField build(Field field, InternalLicp licp)
     {
-        Class<?> type = field.getType();
-        Constructor<? extends CacheField> constructor = map.get(type);
-        String rule = field.getDeclaringClass().getName() + '.' + field.getName();
-        LicpFieldInterceptor fieldInterceptor = licp.getFieldInterceptor(rule);
+        Class<?>                          type             = field.getType();
+        Constructor<? extends CacheField> constructor      = map.get(type);
+        String                            rule             = field.getDeclaringClass().getName() + '.' + field.getName();
+        LicpFieldInterceptor              fieldInterceptor = licp.getFieldInterceptor(rule);
         if (constructor != null)
         {
             try
             {
                 return constructor.newInstance(field, fieldInterceptor);
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
-                throw new JustThrowException(e);
+                ReflectUtil.throwException(e);
             }
         }
         return new ObjectField(field, licp, fieldInterceptor);
     }
-    
 }

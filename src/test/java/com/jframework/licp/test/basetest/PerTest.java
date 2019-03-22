@@ -1,20 +1,21 @@
 package com.jframework.licp.test.basetest;
 
 import java.util.Date;
+
+import com.jfireframework.licp.buf.ByteBuf;
+import com.jfireframework.licp.buf.HeapByteBuf;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.jfireframework.baseutil.collection.buffer.ByteBuf;
-import com.jfireframework.baseutil.collection.buffer.HeapByteBuf;
 import com.jfireframework.licp.InternalLicp;
 import com.jframework.licp.test.basetest.data.Device;
 import com.jframework.licp.test.basetest.data.SpeedData2;
 
 public class PerTest
 {
-    private Logger     logger  = LoggerFactory.getLogger(PerTest.class);
-    public static int  testSum = 100000000;
-    private ByteBuf<?> buf     = HeapByteBuf.allocate(100);
+    private       Logger     logger  = LoggerFactory.getLogger(PerTest.class);
+    public static int        testSum = 100;
+    private       ByteBuf<?> buf     = HeapByteBuf.allocate(100);
     
     private Device Builder()
     {

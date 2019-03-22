@@ -1,8 +1,9 @@
 package com.jfireframework.licp.serializer.array;
 
+import com.jfireframework.licp.serializer.LicpSerializer;
+
 import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
-import com.jfireframework.licp.serializer.LicpSerializer;
 
 public abstract class AbstractArraySerializer<T> implements LicpSerializer<T>
 {

@@ -1,13 +1,6 @@
 package com.jfireframework.licp.util;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 对象类型序号注册中心。对象类型序号从2开始。

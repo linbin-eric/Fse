@@ -1,11 +1,13 @@
 package com.jfireframework.licp.field.impl;
 
-import java.lang.reflect.Field;
-import java.nio.ByteBuffer;
-import com.jfireframework.baseutil.collection.buffer.ByteBuf;
+import com.jfireframework.baseutil.reflect.UNSAFE;
 import com.jfireframework.licp.InternalLicp;
+import com.jfireframework.licp.buf.ByteBuf;
 import com.jfireframework.licp.interceptor.LicpFieldInterceptor;
 import com.jfireframework.licp.util.BufferUtil;
+
+import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
 
 public class IntegerField extends AbstractCacheField
 {
@@ -17,7 +19,7 @@ public class IntegerField extends AbstractCacheField
     @Override
     public void write(Object holder, ByteBuf<?> buf, InternalLicp licp)
     {
-        Integer value = (Integer) unsafe.getObject(holder, offset);
+        Integer value = (Integer) UNSAFE.getObject(holder, offset);
         if (fieldInterceptor != null)
         {
             value = fieldInterceptor.serialize(value);
@@ -44,7 +46,7 @@ public class IntegerField extends AbstractCacheField
             {
                 value = fieldInterceptor.deserialize(value);
             }
-            unsafe.putObject(holder, offset, value);
+            UNSAFE.putObject(holder, offset, value);
         }
         else
         {
@@ -53,7 +55,7 @@ public class IntegerField extends AbstractCacheField
             {
                 value = fieldInterceptor.deserialize(value);
             }
-            unsafe.putObject(holder, offset, value);
+            UNSAFE.putObject(holder, offset, value);
         }
     }
     
@@ -68,7 +70,7 @@ public class IntegerField extends AbstractCacheField
             {
                 value = fieldInterceptor.deserialize(value);
             }
-            unsafe.putObject(holder, offset, value);
+            UNSAFE.putObject(holder, offset, value);
         }
         else
         {
@@ -77,7 +79,7 @@ public class IntegerField extends AbstractCacheField
             {
                 value = fieldInterceptor.deserialize(value);
             }
-            unsafe.putObject(holder, offset, value);
+            UNSAFE.putObject(holder, offset, value);
         }
         
     }

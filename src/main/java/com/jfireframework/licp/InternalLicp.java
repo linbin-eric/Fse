@@ -1,11 +1,8 @@
 package com.jfireframework.licp;
 
-import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.Map;
-import com.jfireframework.baseutil.collection.buffer.ByteBuf;
-import com.jfireframework.baseutil.exception.JustThrowException;
 import com.jfireframework.baseutil.exception.UnSupportException;
+import com.jfireframework.baseutil.reflect.ReflectUtil;
+import com.jfireframework.licp.buf.ByteBuf;
 import com.jfireframework.licp.interceptor.LicpFieldInterceptor;
 import com.jfireframework.licp.serializer.LicpSerializer;
 import com.jfireframework.licp.serializer.SerializerFactory;
@@ -13,25 +10,29 @@ import com.jfireframework.licp.util.BufferUtil;
 import com.jfireframework.licp.util.ClassNoRegister;
 import com.jfireframework.licp.util.ObjectCollect;
 
+import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
+
 public class InternalLicp
 {
-    private ObjectCollect                           collect      = new ObjectCollect(true);
-    private ClassNoRegister                         register     = new ClassNoRegister();
-    public static final int                         NULL         = 0;
-    public static final int                         EXIST        = 1;
-    private final HashMap<String, Class<?>>         nameClassMap = new HashMap<String, Class<?>>();
-    private final SerializerFactory                 factory      = new SerializerFactory();
-    private final Map<String, LicpFieldInterceptor> interceptors = new HashMap<String, LicpFieldInterceptor>();
+    private              ObjectCollect                     collect      = new ObjectCollect(true);
+    private              ClassNoRegister                   register     = new ClassNoRegister();
+    public static final  int                               NULL         = 0;
+    public static final  int                               EXIST        = 1;
+    private final        HashMap<String, Class<?>>         nameClassMap = new HashMap<String, Class<?>>();
+    private final        SerializerFactory                 factory      = new SerializerFactory();
+    private final        Map<String, LicpFieldInterceptor> interceptors = new HashMap<String, LicpFieldInterceptor>();
     /**
      * 版本号标识，用来防止不同的版本互相转化导致的异常
      */
-    private static final byte                       version      = 0;
-    
+    private static final byte                              version      = 0;
+
     public void disableCycleSupport()
     {
         collect = new ObjectCollect(false);
     }
-    
+
     public void serialize(Object src, ByteBuf<?> buf)
     {
         collect.clear();
@@ -39,17 +40,17 @@ public class InternalLicp
         buf.put(version);
         _serialize(src, buf);
     }
-    
+
     public void register(Class<?>... types)
     {
         register = new ClassNoRegister(types);
     }
-    
+
     /**
      * 00代表为null 01代表对象已经在收集器中，之后的数字代表对象在收集器中的id
      * 10代表对象不在收集器中并且对象的类型尚未注册。之后的数字代表对象类型的名称的byte数组的长度
      * 11代表对象不在收集器中并且对象的类型已经注册。之后的数字代表对象类型的注册顺序。
-     * 
+     *
      * @param src
      * @param buf
      */
@@ -69,8 +70,8 @@ public class InternalLicp
             buf.writePositive(id);
             return;
         }
-        Class<?> type = src.getClass();
-        int classNo = register.indexOf(type);
+        Class<?> type    = src.getClass();
+        int      classNo = register.indexOf(type);
         if (classNo == 0)
         {
             String name = type.getName();
@@ -90,13 +91,13 @@ public class InternalLicp
         }
         _getSerializer(type).serialize(src, buf, this);
     }
-    
+
     @SuppressWarnings("rawtypes")
     public LicpSerializer _getSerializer(Class<?> type)
     {
         return factory.get(type, this);
     }
-    
+
     public void _serialize(Object src, ByteBuf<?> buf, LicpSerializer<Object> serializer)
     {
         if (src == null)
@@ -115,7 +116,7 @@ public class InternalLicp
         buf.writePositive(2);
         serializer.serialize(src, buf, this);
     }
-    
+
     @SuppressWarnings("unchecked")
     public <T> T deserialize(ByteBuf<?> buf, Class<T> type)
     {
@@ -127,7 +128,7 @@ public class InternalLicp
         }
         return (T) _deserialize(buf);
     }
-    
+
     @SuppressWarnings("unchecked")
     public <T> T deserialize(ByteBuf<?> buf)
     {
@@ -139,7 +140,7 @@ public class InternalLicp
         }
         return (T) _deserialize(buf);
     }
-    
+
     @SuppressWarnings("unchecked")
     public <T> T deserialize(ByteBuffer buffer)
     {
@@ -151,7 +152,7 @@ public class InternalLicp
         }
         return (T) _deserialize(buffer);
     }
-    
+
     @SuppressWarnings("unchecked")
     public Object _deserialize(ByteBuf<?> buf)
     {
@@ -189,7 +190,7 @@ public class InternalLicp
             throw new UnSupportException("not here");
         }
     }
-    
+
     public Object _deserialize(ByteBuffer buf)
     {
         int result = BufferUtil.readPositive(buf);
@@ -226,7 +227,7 @@ public class InternalLicp
             throw new UnSupportException("not here");
         }
     }
-    
+
     public Object _deserialize(ByteBuf<?> buf, LicpSerializer<?> serializer)
     {
         int result = buf.readPositive();
@@ -249,7 +250,7 @@ public class InternalLicp
             throw new UnSupportException("not here");
         }
     }
-    
+
     public Object _deserialize(ByteBuffer buf, LicpSerializer<?> serializer)
     {
         int result = BufferUtil.readPositive(buf);
@@ -272,7 +273,7 @@ public class InternalLicp
             throw new UnSupportException("not here");
         }
     }
-    
+
     public Class<?> loadClass(String name)
     {
         try
@@ -288,28 +289,28 @@ public class InternalLicp
             {
                 return type;
             }
-        }
-        catch (ClassNotFoundException e)
+        } catch (ClassNotFoundException e)
         {
-            throw new JustThrowException(e);
+            ReflectUtil.throwException(e);
+            return null;
         }
     }
-    
+
     public Class<?> loadClass(int classNo)
     {
         return register.getType(classNo);
     }
-    
+
     public void putObject(Object x)
     {
         collect.putForDesc(x);
     }
-    
+
     public LicpFieldInterceptor getFieldInterceptor(String rule)
     {
         return interceptors.get(rule);
     }
-    
+
     public void addFieldInterceptor(LicpFieldInterceptor licpInterceptor)
     {
         interceptors.put(licpInterceptor.rule(), licpInterceptor);
