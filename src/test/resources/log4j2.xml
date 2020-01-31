@@ -1,0 +1,14 @@
+<Configuration>
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d %-5p [%t] %m (%F:%L)%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="com.tccdemo" level="debug"/>
+        <Logger name="com.jfireframework" level="debug"/>
+        <Root level="debug">
+            <AppenderRef ref="STDOUT"/>
+        </Root>
+    </Loggers>
+</Configuration>

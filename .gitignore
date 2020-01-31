@@ -2,6 +2,7 @@
 target/
 .project
 .settings/
+.metadata/
 .classpath
 *.MF
 

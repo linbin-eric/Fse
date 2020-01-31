@@ -1,0 +1,15 @@
+server:
+  port: 7002
+spring:
+  application:
+    name: client
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:7000/eureka/
+tcc:
+  identifier: ${spring.application.name}
+  basedir: z:/client_tcclog
