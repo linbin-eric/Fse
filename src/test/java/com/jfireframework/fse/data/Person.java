@@ -1,8 +1,9 @@
 package com.jfireframework.fse.data;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Person
+public class Person implements Serializable
 {
     public  String                 name;
     public  int                    age  = 56;

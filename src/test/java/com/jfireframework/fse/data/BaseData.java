@@ -2,10 +2,11 @@ package com.jfireframework.fse.data;
 
 import com.jfireframework.fse.RandomString;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Random;
 
-public class BaseData
+public class BaseData implements Serializable
 {
     public  int         a     = 213212312;
     private Date[]      dates = new Date[]{new Date(13536156), new Date(54454655)};

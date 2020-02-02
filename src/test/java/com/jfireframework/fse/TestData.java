@@ -1,6 +1,8 @@
 package com.jfireframework.fse;
 
-public class TestData
+import java.io.Serializable;
+
+public class TestData implements Serializable
 {
     private int       a = 213212312;
     private boolean   b = false;

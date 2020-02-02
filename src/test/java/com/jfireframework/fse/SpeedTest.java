@@ -6,11 +6,13 @@ import com.esotericsoftware.kryo.io.Output;
 import com.jfireframework.fse.data.Device;
 import com.jfireframework.fse.data.Person;
 import com.jfireframework.fse.data.WrapData;
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Date;
 
 public class SpeedTest
@@ -61,22 +63,33 @@ public class SpeedTest
     }
 
     @Test
-    public void serialize() throws InstantiationException, IllegalAccessException, ClassNotFoundException, UnsupportedEncodingException, NoSuchFieldException, SecurityException, IllegalArgumentException
+    public void serialize() throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException, NoSuchFieldException, SecurityException, IllegalArgumentException
     {
-        int    testSum = 40000;
         Person person  = new Person("linbin", 25);
         Person tPerson = new Person("zhangshi[in", 30);
         person.setLeader(tPerson);
-        Device    device    = Builder();
+        doSerializeTest(person);
+    }
+
+    @Test
+    public void serializeSmall() throws IOException
+    {
+        TestData testData = new TestData();
+        doSerializeTest(testData);
+    }
+
+    private void doSerializeTest(Object obj) throws IOException
+    {
+        int       testSum   = 40000;
         Fse       context   = new Fse();
         ByteArray byteArray = ByteArray.allocate();
         byteArray.clear();
-        context.serialize(person, byteArray);
-        long      t0        = System.currentTimeMillis();
+        context.serialize(obj, byteArray);
+        long t0 = System.currentTimeMillis();
         for (int i = 0; i < testSum; i++)
         {
             byteArray.clear();
-            context.serialize(person, byteArray);
+            context.serialize(obj, byteArray);
         }
         long fseCose = System.currentTimeMillis() - t0;
         logger.info("fse序列化耗时：{}", fseCose);
@@ -84,17 +97,30 @@ public class SpeedTest
         Output output = null;
         output = new Output(4096, 109096);
         output.clear();
-        kryo.writeClassAndObject(output, person);
+        kryo.writeClassAndObject(output, obj);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < testSum; i++)
         {
             output.clear();
-            kryo.writeClassAndObject(output, person);
+            kryo.writeClassAndObject(output, obj);
         }
         long kryoCost = System.currentTimeMillis() - t0;
         logger.info("kryo序列化耗时{}", kryoCost);
-        logger.info("fse比kryo快{},速度是其{}倍", (kryoCost - fseCose), ((float) kryoCost / fseCose));
+        logger.info("fse比kryo快{}毫秒,速度比kryo快{}倍", (kryoCost - fseCose), ((float) kryoCost / fseCose) - 1);
+        ByteOutputStream   byteOutputStream   = new ByteOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteOutputStream);
+        objectOutputStream.writeObject(obj);
+        byteOutputStream.reset();
         t0 = System.currentTimeMillis();
+        for (int i = 0; i < testSum; i++)
+        {
+            objectOutputStream.reset();
+            byteOutputStream.reset();
+            objectOutputStream.writeObject(obj);
+        }
+        long jdkCost = System.currentTimeMillis() - t0;
+        logger.debug("Java原生序列化耗时{}", jdkCost);
+        logger.info("fse比原生快{}倍", ((float) jdkCost / fseCose) - 1);
     }
 
     @Test
