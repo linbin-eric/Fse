@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.jfireframework</groupId>
     <artifactId>fse</artifactId>
-    <version>aegean-1.0</version>
+    <version>aegean-1.1</version>
     <name>fse</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

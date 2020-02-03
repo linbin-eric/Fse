@@ -20,4 +20,14 @@ public class ArrayRefenceHolder
     {
         return b;
     }
+
+    public void setB(int[][] b)
+    {
+        this.b = b;
+    }
+
+    public void setA(int[][] a)
+    {
+        this.a = a;
+    }
 }

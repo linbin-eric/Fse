@@ -9,7 +9,7 @@ public class SimpleTest
     @Test
     public void test()
     {
-        Person person = new Person();
+        SimplePerson person = new SimplePerson();
         person.setName("林斌123as");
         person.setAge(27);
         person.setWeight(15.65f);
@@ -17,7 +17,7 @@ public class SimpleTest
         Fse       licp = new Fse();
         ByteArray buf  = ByteArray.allocate(100);
         licp.serialize(person, buf);
-        Person result = (Person) licp.deSerialize(buf);
+        SimplePerson result = (SimplePerson) licp.deSerialize(buf);
         System.out.println(result);
         assertTrue(person.equals(result));
     }

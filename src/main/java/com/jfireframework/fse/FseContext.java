@@ -5,7 +5,7 @@ public class FseContext
     private SerializerFactory serializerFactory = new SerializerFactory();
     private ObjectCollector   objectCollector   = new ObjectCollector();
     private ClassRegistry     classRegistry     = new ClassRegistry(serializerFactory);
-    private boolean           withCycle         = true;
+    private boolean           withCycle         = false;
 
     public void setWithCycle(boolean withCycle)
     {

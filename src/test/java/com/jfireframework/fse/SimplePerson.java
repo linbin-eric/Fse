@@ -1,6 +1,6 @@
 package com.jfireframework.fse;
 
-public class Person
+public class SimplePerson
 {
     private int    age;
     private String name;
@@ -15,9 +15,9 @@ public class Person
     @Override
     public boolean equals(Object x)
     {
-        if (x instanceof Person)
+        if (x instanceof SimplePerson)
         {
-            Person target = (Person) x;
+            SimplePerson target = (SimplePerson) x;
             if (target.age == age && name.equals(target.name) && target.weight.floatValue() == weight.floatValue())
             {
                 return true;

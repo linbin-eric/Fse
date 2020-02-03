@@ -77,7 +77,7 @@ public class SpeedTest
     public void serializeSmall() throws IOException
     {
         TestData testData = new TestData();
-        doSerializeTest(testData, 400000);
+        doSerializeTest(testData, 4000000);
     }
 
     private void doSerializeTest(Object obj, int testSum) throws IOException

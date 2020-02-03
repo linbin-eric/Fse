@@ -45,6 +45,10 @@ public class CompileObjectSerializer extends CycleFlagSerializer implements FseS
             deSerializeBody.append("$1.collectObject(_target);\r\n");
             for (Field each : allFields)
             {
+                if (isFieldGetAndSetMethodExist(each) == false)
+                {
+                    continue;
+                }
                 if (each.getType().isPrimitive())
                 {
                     if (each.getType() == int.class)
@@ -116,8 +120,8 @@ public class CompileObjectSerializer extends CycleFlagSerializer implements FseS
                         setMethod.setBody(entry.name + "=$0;\r\n");
                         classModel.putMethodModel(setMethod);
                         entries.add(entry);
-                        serializeBody.append(entry.name).append(".serializeNotRegisterClass(_target.").append(buildGetMethodName(each)).append("(),$1,$2,$3);\r\n");
-                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("((" + SmcHelper.getReferenceName(each.getType(), classModel) + ")").append(entry.name).append(".deSerializeNotRegisterClass($0,$1));\r\n");
+                        serializeBody.append(entry.name).append(".writeToBytesWithoutRegisterClass(_target.").append(buildGetMethodName(each)).append("(),$1,$2,$3);\r\n");
+                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("((" + SmcHelper.getReferenceName(each.getType(), classModel) + ")").append(entry.name).append(".readBytesWithoutRegisterClass($0,$1));\r\n");
                     }
                     else
                     {
@@ -141,6 +145,22 @@ public class CompileObjectSerializer extends CycleFlagSerializer implements FseS
         catch (Throwable e)
         {
             ReflectUtil.throwException(e);
+        }
+    }
+
+    private boolean isFieldGetAndSetMethodExist(Field field)
+    {
+        String getMethodName = buildGetMethodName(field);
+        String setMethodName = buildSetMethodName(field);
+        try
+        {
+            field.getDeclaringClass().getDeclaredMethod(getMethodName);
+            field.getDeclaringClass().getDeclaredMethod(setMethodName,field.getType());
+            return true;
+        }
+        catch (NoSuchMethodException e)
+        {
+            return false;
         }
     }
 

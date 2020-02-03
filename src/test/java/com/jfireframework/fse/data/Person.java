@@ -1,6 +1,7 @@
 package com.jfireframework.fse.data;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.*;
 
 public class Person implements Serializable
@@ -29,9 +30,10 @@ public class Person implements Serializable
         this.age = age;
     }
 
-    public static void main(String args[]) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+    public static void main(String args[]) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException
     {
-        System.out.println(Person.class.getDeclaredField("map").get(new Person()).getClass());
+        Field w = Person.class.getDeclaredField("w");
+        Person.class.getDeclaredMethod("setW",w.getType());
     }
 
     public boolean equals(Object target)
