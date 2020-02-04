@@ -152,6 +152,11 @@ public class ObjectSerializer extends CycleFlagSerializer implements FseSerializ
             else
             {
                 Object property = entry.accessor.get(o);
+                if (property == null)
+                {
+                    byteArray.put(Fse.NULL);
+                    continue;
+                }
                 if (entry.finalType)
                 {
                     entry.serializer.writeToBytesWithoutRegisterClass(entry.accessor.get(o), byteArray, fseContext, depth);
@@ -167,7 +172,7 @@ public class ObjectSerializer extends CycleFlagSerializer implements FseSerializ
     @Override
     public void doWriteToBytesWithoutRegisterClass(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
     {
-        byteArray.put((byte) 1);
+        byteArray.put(Fse.USE_FIELD_TYPE);
         writeEntries(o, byteArray, fseContext, depth);
     }
 

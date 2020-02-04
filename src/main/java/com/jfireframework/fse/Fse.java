@@ -2,18 +2,19 @@ package com.jfireframework.fse;
 
 public class Fse
 {
-    public static final byte       WITH_CYCLE    = (byte) 0Xc1;
-    public static final byte       WITHOUT_CYCLE = (byte) 0xc2;
-    public static final int        SUPPORT_CYCLE = -1;
-    public static final byte       NULL          = 0;
-    public static final int        maxDepth;
+    public static final byte WITH_CYCLE     = (byte) 0Xc1;
+    public static final byte WITHOUT_CYCLE  = (byte) 0xc2;
+    public static final int  SUPPORT_CYCLE  = -1;
+    public static final byte NULL           = 0;
+    public static final byte USE_FIELD_TYPE = 1;
+    public static final int  maxDepth;
 
     static
     {
-        maxDepth = 64;
+        maxDepth = 32;
     }
 
-    private             FseContext fseContext    = new FseContext();
+    private FseContext fseContext = new FseContext();
 
     public void serialize(Object o, ByteArray byteArray)
     {

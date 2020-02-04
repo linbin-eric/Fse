@@ -7,11 +7,12 @@ import java.util.*;
 
 public class ClassRegistry
 {
-    private Entry[]            entries      = new Entry[64];
-    private int                sequence     = 0;
-    private int                buildInIndex = 0;
-    private SerializerFactory  serializerFactory;
-    private Map<String, Class> nameToClass  = new HashMap<String, Class>();
+    private       Entry[]            entries      = new Entry[64];
+    private final int                startIndex   = 1;
+    private       int                sequence     = startIndex;
+    private       int                buildInIndex = startIndex;
+    private       SerializerFactory  serializerFactory;
+    private       Map<String, Class> nameToClass  = new HashMap<String, Class>();
 
     public ClassRegistry(SerializerFactory serializerFactory)
     {
@@ -62,26 +63,26 @@ public class ClassRegistry
         {
             throw new IllegalStateException();
         }
-        int seq = getId(ckass).getId();
-        if (seq < 0)
+        int id = getEntry(ckass).getId();
+        if (id < 0)
         {
             throw new IllegalArgumentException("该对象已经注册过");
         }
-        else if (seq != buildInIndex + 1)
+        else if (sequence != buildInIndex + 1)
         {
             throw new IllegalArgumentException("不能在收集了自定义对象后注册对象");
         }
         buildInIndex += 1;
     }
 
-    public Entry getId(int id)
+    public Entry getEntry(int id)
     {
-        return entries[id - 1];
+        return entries[id];
     }
 
-    public Entry getId(Class<?> src)
+    public Entry getEntry(Class<?> src)
     {
-        for (int i = 0; i < sequence; i++)
+        for (int i = startIndex; i < sequence; i++)
         {
             Entry entry = entries[i];
             if (entry.ckass == src)
@@ -97,7 +98,7 @@ public class ClassRegistry
         }
         Entry entry = new Entry();
         entry.setCkass(src);
-        entry.setId(sequence + 1);
+        entry.setId(sequence);
         entry.setSerializer(serializerFactory.getSerializer(src));
         entries[sequence] = entry;
         sequence += 1;
@@ -140,7 +141,7 @@ public class ClassRegistry
                     ReflectUtil.throwException(e);
                 }
             }
-            getId(aClass);
+            getEntry(aClass);
         }
     }
 

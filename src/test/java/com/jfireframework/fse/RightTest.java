@@ -1,7 +1,6 @@
 package com.jfireframework.fse;
 
 import com.jfireframework.baseutil.encrypt.AesUtil;
-import com.jfireframework.fse.data.Person;
 import com.jfireframework.fse.data.*;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 public class RightTest
 {
     ByteArray buf = ByteArray.allocate();
+    private boolean useCompile = false;
 
     @Test
     public void baseTypeTest() throws IllegalArgumentException, IllegalAccessException, UnsupportedEncodingException, ClassNotFoundException, InstantiationException
@@ -27,6 +27,10 @@ public class RightTest
         BaseData baseData = new BaseData(1);
         // 构建lbse对象，该对象是非线程安全的，请注意
         Fse context = new Fse();
+        if (useCompile)
+        {
+            context.useCompile();
+        }
         context.register(BaseData.class);
         // 进行序列化，返回的是一个buffer对象
         context.serialize(baseData, buf);
@@ -86,6 +90,10 @@ public class RightTest
         buf.clear();
         WrapData wrapData = new WrapData();
         Fse      context  = new Fse();
+        if (useCompile)
+        {
+            context.useCompile();
+        }
         context.register(WrapData.class);
         context.serialize(wrapData, buf);
         WrapData result = (WrapData) context.deSerialize(buf);
@@ -159,6 +167,10 @@ public class RightTest
         person.setLeader(tPerson);
         tPerson.setLeader(person);
         Fse context = new Fse();
+        if (useCompile)
+        {
+            context.useCompile();
+        }
         buf.clear();
         context.serialize(person, buf);
         Person result = (Person) context.deSerialize(buf);
@@ -168,11 +180,15 @@ public class RightTest
     @Test
     public void objectTest() throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException, InstantiationException
     {
-        Fse      lbse     = new Fse();
+        Fse context = new Fse();
+        if (useCompile)
+        {
+            context.useCompile();
+        }
         Calendar calendar = Calendar.getInstance();
         buf.clear();
-        lbse.serialize(calendar, buf);
-        Calendar reCalendar = (Calendar) lbse.deSerialize(buf);
+        context.serialize(calendar, buf);
+        Calendar reCalendar = (Calendar) context.deSerialize(buf);
         Assert.assertTrue(reCalendar.equals(calendar));
     }
 
@@ -185,10 +201,14 @@ public class RightTest
         {
             list.add(new BaseData(i));
         }
-        Fse lbse = new Fse();
+        Fse context = new Fse();
+        if (useCompile)
+        {
+            context.useCompile();
+        }
         buf.clear();
-        lbse.serialize(list, buf);
-        ArrayList<BaseData> result = (ArrayList<BaseData>) lbse.deSerialize(buf);
+        context.serialize(list, buf);
+        ArrayList<BaseData> result = (ArrayList<BaseData>) context.deSerialize(buf);
         Assert.assertTrue(list.equals(result));
     }
 
@@ -200,21 +220,29 @@ public class RightTest
         array[1] = new BaseData();
         array[2] = new LongData();
         array[3] = new WrapData();
-        Fse lbse = new Fse();
+        Fse context = new Fse();
+        if (useCompile)
+        {
+            context.useCompile();
+        }
         buf.clear();
-        lbse.serialize(array, buf);
-        Object[] result = (Object[]) lbse.deSerialize(buf);
+        context.serialize(array, buf);
+        Object[] result = (Object[]) context.deSerialize(buf);
         Assert.assertTrue(((Person) result[0]).equals(array[0]));
     }
 
     @Test
     public void byteArrayTest()
     {
-        byte[] array = new byte[]{1, 2, 5, 6, 8, 9};
-        Fse    lbse  = new Fse();
+        byte[] array   = new byte[]{1, 2, 5, 6, 8, 9};
+        Fse    context = new Fse();
+        if (useCompile)
+        {
+            context.useCompile();
+        }
         buf.clear();
-        lbse.serialize(array, buf);
-        byte[] result = (byte[]) lbse.deSerialize(buf);
+        context.serialize(array, buf);
+        byte[] result = (byte[]) context.deSerialize(buf);
         for (int i = 0; i < array.length; i++)
         {
             assertEquals(array[i], result[i]);
@@ -224,10 +252,14 @@ public class RightTest
     @Test
     public void booleanArrayTest()
     {
-        boolean[] array = new boolean[]{true, false, false, true, true, true};
-        Fse       lbse  = new Fse();
-        lbse.serialize(array, buf);
-        boolean[] result = (boolean[]) lbse.deSerialize(buf);
+        boolean[] array   = new boolean[]{true, false, false, true, true, true};
+        Fse       context = new Fse();
+        if (useCompile)
+        {
+            context.useCompile();
+        }
+        context.serialize(array, buf);
+        boolean[] result = (boolean[]) context.deSerialize(buf);
         for (int i = 0; i < array.length; i++)
         {
             assertEquals(array[i], result[i]);
@@ -237,10 +269,14 @@ public class RightTest
     @Test
     public void arrayDataTest()
     {
-        Fse lbse = new Fse();
+        Fse context = new Fse();
+        if (useCompile)
+        {
+            context.useCompile();
+        }
         buf.clear();
-        lbse.serialize(new ArrayData(), buf);
-        lbse.deSerialize(buf);
+        context.serialize(new ArrayData(), buf);
+        context.deSerialize(buf);
     }
 
     @Test
@@ -251,13 +287,17 @@ public class RightTest
         random.nextBytes(key);
         AesUtil  aesUtil = new AesUtil(key);
         Object[] data    = new Object[]{Integer.valueOf(14), new BaseData[]{new BaseData(), new BaseData()}};
-        Fse      lbse    = new Fse();
+        Fse      context = new Fse();
+        if (useCompile)
+        {
+            context.useCompile();
+        }
         buf.clear();
-        lbse.serialize(data, buf);
+        context.serialize(data, buf);
         byte[] aesResult = aesUtil.encrypt(buf.toArray());
         buf.clear();
         buf.put(aesUtil.decrypt(aesResult));
-        Object[] result = (Object[]) lbse.deSerialize(buf);
+        Object[] result = (Object[]) context.deSerialize(buf);
         assertEquals(14, result[0]);
         assertEquals(((BaseData[]) data[1])[0], ((BaseData[]) result[1])[0]);
         assertEquals(((BaseData[]) data[1])[1], ((BaseData[]) result[1])[1]);
@@ -269,11 +309,15 @@ public class RightTest
     @Test
     public void arryaNotRegisterClassSeri()
     {
-        ArrayRefenceHolder holder = new ArrayRefenceHolder();
-        Fse                fse    = new Fse();
+        ArrayRefenceHolder holder  = new ArrayRefenceHolder();
+        Fse                context = new Fse();
+        if (useCompile)
+        {
+            context.useCompile();
+        }
         buf.clear();
-        fse.serialize(holder, buf);
-        ArrayRefenceHolder result = (ArrayRefenceHolder) fse.deSerialize(buf);
+        context.serialize(holder, buf);
+        ArrayRefenceHolder result = (ArrayRefenceHolder) context.deSerialize(buf);
         assertArrayEquals(new int[]{1, 2}, holder.getA()[0]);
         assertArrayEquals(new int[]{3, 4}, holder.getA()[1]);
         assertArrayEquals(new int[]{1, 2}, holder.getB()[0]);
@@ -284,10 +328,14 @@ public class RightTest
     public void methodObjectTest() throws NoSuchMethodException
     {
         Method methodObjectTest = this.getClass().getDeclaredMethod("methodObjectTest");
-        Fse                fse    = new Fse();
+        Fse    context          = new Fse();
+        if (useCompile)
+        {
+            context.useCompile();
+        }
         buf.clear();
-        fse.serialize(methodObjectTest, buf);
-        Method method = (Method) fse.deSerialize(buf);
+        context.serialize(methodObjectTest, buf);
+        Method method = (Method) context.deSerialize(buf);
         System.out.println(method.equals(methodObjectTest));
         assertEquals(methodObjectTest, method);
     }

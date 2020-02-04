@@ -5,7 +5,7 @@ public class FseContext
     private SerializerFactory serializerFactory = new SerializerFactory();
     private ObjectCollector   objectCollector   = new ObjectCollector();
     private ClassRegistry     classRegistry     = new ClassRegistry(serializerFactory);
-    private boolean           withCycle         = false;
+    private boolean           withCycle         = true;
 
     public void setWithCycle(boolean withCycle)
     {
@@ -35,6 +35,7 @@ public class FseContext
     {
         objectCollector.clear();
         classRegistry.clear();
+        withCycle = true;
     }
 
     public Object getObjectByIndex(int i)
@@ -47,17 +48,6 @@ public class FseContext
         classRegistry.register(ckass);
     }
 
-    //    public void serialize(Object o, InternalByteArray byteArray)
-//    {
-//        if (o == null)
-//        {
-//            byteArray.writeVarInt(0);
-//            return;
-//        }
-//        Class<?>            ckass = o.getClass();
-//        ClassRegistry.Entry entry = classRegistry.getId(ckass);
-//        entry.getSerializer().serialize(o, entry.getId(), byteArray, this);
-//    }
     public void startSerilaize(Object o, InternalByteArray byteArray)
     {
         if (o == null)
@@ -66,20 +56,23 @@ public class FseContext
             return;
         }
         Class<?>            ckass = o.getClass();
-        ClassRegistry.Entry entry = classRegistry.getId(ckass);
+        ClassRegistry.Entry entry = classRegistry.getEntry(ckass);
         if (entry.getSerializer().needSupportCycle())
         {
+            withCycle = true;
             entry.getSerializer().writeToBytes(o, entry.getId(), byteArray, this, Fse.SUPPORT_CYCLE);
         }
         else
         {
             try
             {
+                withCycle = false;
                 entry.getSerializer().writeToBytes(o, entry.getId(), byteArray, this, 0);
                 byteArray.setByte(0, Fse.WITHOUT_CYCLE);
             }
-            catch (ShouldSupportCycleException e)
+            catch (ShouldSupportCycleException | StackOverflowError e)
             {
+                withCycle = true;
                 entry.getSerializer().supportCycle();
                 byteArray.setWritePosi(5);
                 entry.getSerializer().writeToBytes(o, entry.getId(), byteArray, this, Fse.SUPPORT_CYCLE);
@@ -95,18 +88,18 @@ public class FseContext
             return;
         }
         Class<?>            ckass = o.getClass();
-        ClassRegistry.Entry entry = classRegistry.getId(ckass);
+        ClassRegistry.Entry entry = classRegistry.getEntry(ckass);
         entry.getSerializer().writeToBytes(o, entry.getId(), byteArray, this, depth);
     }
 
     public ClassRegistry.Entry getClassRegistry(Class ckass)
     {
-        return classRegistry.getId(ckass);
+        return classRegistry.getEntry(ckass);
     }
 
     public ClassRegistry.Entry getClassRegistry(int id)
     {
-        return classRegistry.getId(id);
+        return classRegistry.getEntry(id);
     }
 
     public void useCompile()
