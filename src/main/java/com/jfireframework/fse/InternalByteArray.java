@@ -493,7 +493,7 @@ public class InternalByteArray extends ByteArray
     public void skipWrite(int len)
     {
         ensureCapacity(len);
-        writePosi += 4;
+        writePosi += len;
     }
 
     public void writeString(String value)
