@@ -1,7 +1,6 @@
 package com.jfireframework.fse;
 
 import com.caucho.hessian.io.Hessian2Output;
-import com.caucho.hessian.io.HessianOutput;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -10,6 +9,8 @@ import com.jfireframework.fse.data.Person;
 import com.jfireframework.fse.data.WrapData;
 import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import org.junit.Test;
+import org.nustaq.serialization.FSTConfiguration;
+import org.nustaq.serialization.FSTObjectOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,6 +81,8 @@ public class SpeedTest
         doSerializeTest(testData, 4000000);
     }
 
+    static FSTConfiguration conf = FSTConfiguration.createDefaultConfiguration();
+
     private void doSerializeTest(Object obj, int testSum) throws IOException
     {
         Fse       context   = new Fse();
@@ -136,6 +139,20 @@ public class SpeedTest
         long hessisonCost = System.currentTimeMillis() - t0;
         logger.info("hession 序列化耗时：{}", hessisonCost);
         logger.info("fse比hession快{}倍", ((float) hessisonCost / fseCose) - 1);
+        byteOutputStream = new ByteOutputStream();
+        FSTObjectOutput objectOutput = conf.getObjectOutput(byteOutputStream);
+        objectOutput.writeObject(obj);
+        objectOutput.resetForReUse();
+        byteOutputStream.reset();
+        t0 = System.currentTimeMillis();
+        for (int i = 0; i < testSum; i++)
+        {
+            byteOutputStream.reset();
+            objectOutput.resetForReUse();
+            objectOutput.writeObject(obj);
+        }
+        long fstCost = System.currentTimeMillis()-t0;
+        logger.info("fst序列化耗时{}毫秒，fse比fst快{}倍",fstCost,((float)fstCost/fseCose)-1);
     }
 
     @Test

@@ -8,8 +8,7 @@
 
 使用业务场景下常见对象进行性能验证，对象内部包含基本属性，字符串，以及其构成的数组和List、Map接口等，在收集性能数据之前首先进行一次序列化操作保证预热。对比数据如下
 
-![](https://markdownpic-1251577930.cos.ap-chengdu.myqcloud.com/20200203142910.png)
-
+![](https://markdownpic-1251577930.cos.ap-chengdu.myqcloud.com/20200204112348.png)
 
 
 ## 使用说明
