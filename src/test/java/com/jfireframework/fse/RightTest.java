@@ -11,8 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class RightTest
 {
@@ -210,6 +209,21 @@ public class RightTest
         context.serialize(list, buf);
         ArrayList<BaseData> result = (ArrayList<BaseData>) context.deSerialize(buf);
         Assert.assertTrue(list.equals(result));
+    }
+
+    @Test
+    public void baseDataTest()
+    {
+        Fse fse = new Fse();
+        if (useCompile)
+        {
+            fse.useCompile();
+        }
+        buf.clear();
+        BaseData baseData = new BaseData();
+        fse.serialize(baseData, buf);
+        BaseData result = (BaseData) fse.deSerialize(buf);
+        assertTrue(result.equals(baseData));
     }
 
     @Test

@@ -86,6 +86,7 @@ public class SpeedTest
     private void doSerializeTest(Object obj, int testSum) throws IOException
     {
         Fse       context   = new Fse();
+//        context.useCompile();
         ByteArray byteArray = ByteArray.allocate();
         byteArray.clear();
         context.serialize(obj, byteArray);

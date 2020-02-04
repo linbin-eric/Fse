@@ -20,15 +20,15 @@ public class BooleanArraySerializer extends CycleFlagSerializer implements FseSe
     public void writeToBytes(Object o, int classIndex, InternalByteArray byteArray, FseContext fseContext, int depth)
     {
         byteArray.writeVarInt(classIndex);
-        writeElement(o, byteArray, 0);
+        writeElement(o, byteArray);
     }
 
-    private void writeElement(Object o, InternalByteArray byteArray, int add)
+    private void writeElement(Object o, InternalByteArray byteArray)
     {
         if (primitive)
         {
             boolean[] array = (boolean[]) o;
-            byteArray.writePositive(array.length + add);
+            byteArray.writePositive(array.length);
             for (boolean i : array)
             {
                 if (i)
@@ -44,7 +44,7 @@ public class BooleanArraySerializer extends CycleFlagSerializer implements FseSe
         else
         {
             Boolean[] array = (Boolean[]) o;
-            byteArray.writePositive(array.length + add);
+            byteArray.writePositive(array.length);
             for (Boolean each : array)
             {
                 if (each == null)
@@ -61,17 +61,6 @@ public class BooleanArraySerializer extends CycleFlagSerializer implements FseSe
                 }
             }
         }
-    }
-
-    @Override
-    public void writeToBytesWithoutRegisterClass(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
-        if (o == null)
-        {
-            byteArray.put((byte) 0);
-            return;
-        }
-        writeElement(o, byteArray, 1);
     }
 
     @Override
@@ -121,15 +110,14 @@ public class BooleanArraySerializer extends CycleFlagSerializer implements FseSe
             return array;
         }
     }
-
-    @Override
-    public Object readBytesWithoutRegisterClass(InternalByteArray byteArray, FseContext fseContext)
-    {
-        int len = byteArray.readPositive();
-        if (len == 0)
-        {
-            return null;
-        }
-        return readElement(byteArray, len - 1);
-    }
+//    @Override
+//    public Object readBytesWithoutRegisterClass(InternalByteArray byteArray, FseContext fseContext)
+//    {
+//        int len = byteArray.readPositive();
+//        if (len == 0)
+//        {
+//            return null;
+//        }
+//        return readElement(byteArray, len - 1);
+//    }
 }

@@ -47,11 +47,6 @@ public class EnumSetSerialzer extends CycleFlagSerializer implements FseSerializ
         }
     }
 
-    @Override
-    public void writeToBytesWithoutRegisterClass(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
-        throw new UnsupportedOperationException();
-    }
 
     @Override
     public Object readBytes(InternalByteArray byteArray, FseContext fseContext)
@@ -76,9 +71,4 @@ public class EnumSetSerialzer extends CycleFlagSerializer implements FseSerializ
         }
     }
 
-    @Override
-    public Object readBytesWithoutRegisterClass(InternalByteArray byteArray, FseContext fseContext)
-    {
-        throw new UnsupportedOperationException();
-    }
 }

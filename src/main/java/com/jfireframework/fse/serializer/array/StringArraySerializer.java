@@ -13,13 +13,13 @@ public class StringArraySerializer extends CycleFlagSerializer implements FseSer
     public void writeToBytes(Object o, int classIndex, InternalByteArray byteArray, FseContext fseContext, int depth)
     {
         byteArray.writeVarInt(classIndex);
-        writeElement((String[]) o, byteArray, 0);
+        writeElement((String[]) o, byteArray);
     }
 
-    private void writeElement(String[] o, InternalByteArray byteArray, int add)
+    private void writeElement(String[] o, InternalByteArray byteArray)
     {
         String[] array = o;
-        byteArray.writePositive(array.length + add);
+        byteArray.writePositive(array.length );
         for (String each : array)
         {
             byteArray.writeString(each);
@@ -43,25 +43,4 @@ public class StringArraySerializer extends CycleFlagSerializer implements FseSer
         return array;
     }
 
-    @Override
-    public void writeToBytesWithoutRegisterClass(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
-        if (o == null)
-        {
-            byteArray.put((byte) 0);
-            return;
-        }
-        writeElement((String[]) o, byteArray, 1);
-    }
-
-    @Override
-    public Object readBytesWithoutRegisterClass(InternalByteArray byteArray, FseContext fseContext)
-    {
-        int len = byteArray.readPositive();
-        if (len == 0)
-        {
-            return null;
-        }
-        return readElement(byteArray, len - 1);
-    }
 }

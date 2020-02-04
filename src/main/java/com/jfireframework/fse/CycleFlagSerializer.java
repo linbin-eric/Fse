@@ -45,37 +45,4 @@ public abstract class CycleFlagSerializer implements FseSerializer
     {
         throw new UnsupportedOperationException();
     }
-
-    @Override
-    public void writeToBytesWithoutRegisterClass(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
-        if (o == null)
-        {
-            byteArray.writeVarInt(0);
-            return;
-        }
-        if (depth == Fse.SUPPORT_CYCLE)
-        {
-            int result = fseContext.collectObject(o);
-            if (result > 0)
-            {
-                byteArray.writeVarInt(0 - result);
-                return;
-            }
-        }
-        else
-        {
-            depth += 1;
-            if (depth > Fse.maxDepth)
-            {
-                throw new ShouldSupportCycleException();
-            }
-        }
-        doWriteToBytesWithoutRegisterClass(o, byteArray, fseContext, depth);
-    }
-
-    public void doWriteToBytesWithoutRegisterClass(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
-        throw new UnsupportedOperationException();
-    }
 }

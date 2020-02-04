@@ -19,17 +19,6 @@ public class CalendarSerializer extends CycleFlagSerializer implements FseSerial
     }
 
     @Override
-    public void writeToBytesWithoutRegisterClass(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
-        if (o == null)
-        {
-            byteArray.put((byte) 0);
-            return;
-        }
-        byteArray.writeVarLong(((Calendar) o).getTimeInMillis() + 1);
-    }
-
-    @Override
     public Object readBytes(InternalByteArray byteArray, FseContext fseContext)
     {
         long     l        = byteArray.readVarLong();
@@ -38,17 +27,4 @@ public class CalendarSerializer extends CycleFlagSerializer implements FseSerial
         return instance;
     }
 
-    @Override
-    public Object readBytesWithoutRegisterClass(InternalByteArray byteArray, FseContext fseContext)
-    {
-        long time = byteArray.readVarLong();
-        if (time == 0)
-        {
-            return null;
-        }
-        time -= 1;
-        Calendar instance = Calendar.getInstance();
-        instance.setTimeInMillis(time);
-        return instance;
-    }
 }

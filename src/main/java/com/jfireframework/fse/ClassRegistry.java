@@ -8,7 +8,7 @@ import java.util.*;
 public class ClassRegistry
 {
     private       Entry[]            entries      = new Entry[64];
-    private final int                startIndex   = 1;
+    private final int                startIndex   = 2;
     private       int                sequence     = startIndex;
     private       int                buildInIndex = startIndex;
     private       SerializerFactory  serializerFactory;

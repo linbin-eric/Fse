@@ -27,22 +27,25 @@ public class CompileObjectSerializer extends CycleFlagSerializer implements FseS
         List<Field> allFields  = getAllFields(type);
         ClassModel  classModel = new ClassModel("output_" + type.getSimpleName());
         classModel.addImport(Helper.class);
+        classModel.addImport(Fse.class);
         classModel.addInterface(Output.class);
         int count = 0;
         try
         {
-            Method      serialize        = Output.class.getMethod("serialize", new Class[]{Object.class, InternalByteArray.class, FseContext.class, int.class});
-            Method      deSerialize      = Output.class.getMethod("deSerialize", new Class[]{InternalByteArray.class, FseContext.class});
-            MethodModel serializeModel   = new MethodModel(serialize, classModel);
+            Method      serialize      = Output.class.getMethod("serialize", new Class[]{Object.class, InternalByteArray.class, FseContext.class, int.class});
+            Method      deSerialize    = Output.class.getMethod("deSerialize", new Class[]{InternalByteArray.class, FseContext.class});
+            MethodModel serializeModel = new MethodModel(serialize, classModel);
+            serializeModel.setParamterNames(new String[]{"o", "byteArray", "fseContext", "depth"});
             MethodModel deSerializeModel = new MethodModel(deSerialize, classModel);
+            deSerializeModel.setParamterNames(new String[]{"byteArray", "fseContext"});
             classModel.putMethodModel(serializeModel);
             classModel.putMethodModel(deSerializeModel);
             StringBuilder serializeBody   = new StringBuilder();
             StringBuilder deSerializeBody = new StringBuilder();
             String        referenceName   = SmcHelper.getReferenceName(type, classModel);
-            serializeBody.append(referenceName).append(" _target = (").append(referenceName).append(")$0;\r\n");
+            serializeBody.append(referenceName).append(" _target = (").append(referenceName).append(")o;\r\n");
             deSerializeBody.append(referenceName).append(" _target =new ").append(referenceName).append("();\r\n");
-            deSerializeBody.append("$1.collectObject(_target);\r\n");
+            deSerializeBody.append("fseContext.collectObject(_target);\r\n");
             for (Field each : allFields)
             {
                 if (isFieldGetAndSetMethodExist(each) == false)
@@ -53,47 +56,47 @@ public class CompileObjectSerializer extends CycleFlagSerializer implements FseS
                 {
                     if (each.getType() == int.class)
                     {
-                        serializeBody.append("$1.writeVarInt(_target.").append(buildGetMethodName(each)).append("());\r\n");
-                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("($0.readVarInt());\r\n");
+                        serializeBody.append("byteArray.writeVarInt(_target.").append(buildGetMethodName(each)).append("());\r\n");
+                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("(byteArray.readVarInt());\r\n");
                     }
                     else if (each.getType() == byte.class)
                     {
-                        serializeBody.append("$1.put(_target.").append(buildGetMethodName(each)).append("());\r\n");
-                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("($0.get());\r\n");
+                        serializeBody.append("byteArray.put(_target.").append(buildGetMethodName(each)).append("());\r\n");
+                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("(byteArray.get());\r\n");
                     }
                     else if (each.getType() == char.class)
                     {
-                        serializeBody.append("$1.writeVarChar(_target.").append(buildGetMethodName(each)).append("());\r\n");
-                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("($0.readVarChar());\r\n");
+                        serializeBody.append("byteArray.writeVarChar(_target.").append(buildGetMethodName(each)).append("());\r\n");
+                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("(byteArray.readVarChar());\r\n");
                     }
                     else if (each.getType() == long.class)
                     {
-                        serializeBody.append("$1.writeVarLong(_target.").append(buildGetMethodName(each)).append("());\r\n");
-                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("($0.readVarLong());\r\n");
+                        serializeBody.append("byteArray.writeVarLong(_target.").append(buildGetMethodName(each)).append("());\r\n");
+                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("(byteArray.readVarLong());\r\n");
                     }
                     else if (each.getType() == float.class)
                     {
-                        serializeBody.append("$1.writeFloat(_target.").append(buildGetMethodName(each)).append("());\r\n");
-                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("($0.readFloat());\r\n");
+                        serializeBody.append("byteArray.writeFloat(_target.").append(buildGetMethodName(each)).append("());\r\n");
+                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("(byteArray.readFloat());\r\n");
                     }
                     else if (each.getType() == short.class)
                     {
-                        serializeBody.append("$1.writeShort(_target.").append(buildGetMethodName(each)).append("());\r\n");
-                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("($0.readShort());\r\n");
+                        serializeBody.append("byteArray.writeShort(_target.").append(buildGetMethodName(each)).append("());\r\n");
+                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("(byteArray.readShort());\r\n");
                     }
                     else if (each.getType() == double.class)
                     {
-                        serializeBody.append("$1.writeDouble(_target.").append(buildGetMethodName(each)).append("());\r\n");
-                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("($0.readDouble());\r\n");
+                        serializeBody.append("byteArray.writeDouble(_target.").append(buildGetMethodName(each)).append("());\r\n");
+                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("(byteArray.readDouble());\r\n");
                     }
                     else if (each.getType() == boolean.class)
                     {
                         serializeBody.append("if(_target.").append(buildGetMethodName(each)).append("()){\r\n");
-                        serializeBody.append("$1.put((byte)0);\r\n");
+                        serializeBody.append("byteArray.put((byte)0);\r\n");
                         serializeBody.append("}else{\r\n");
-                        serializeBody.append("$1.put((byte)1);\r\n");
+                        serializeBody.append("byteArray.put((byte)1);\r\n");
                         serializeBody.append("}\r\n");
-                        deSerializeBody.append("if($0.get()==0){\r\n");
+                        deSerializeBody.append("if(byteArray.get()==0){\r\n");
                         deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("(true);\r\n");
                         deSerializeBody.append("}\r\n");
                         deSerializeBody.append("else{\r\n");
@@ -103,30 +106,70 @@ public class CompileObjectSerializer extends CycleFlagSerializer implements FseS
                 }
                 else
                 {
-                    if (Modifier.isFinal(each.getType().getModifiers()))
+                    int modifiers = each.getType().getModifiers();
+                    if (Modifier.isFinal(modifiers) || (Modifier.isAbstract(modifiers) == false && Modifier.isInterface(modifiers)))
                     {
                         FseSerializer serializer = serializerFactory.getSerializer(each.getType());
                         Entry         entry      = new Entry();
-                        entry.name = "_s_" + count;
+                        entry.serializerName = "_s_" + count;
                         count++;
                         entry.serializer = serializer;
-                        FieldModel fieldModel = new FieldModel(entry.name, FseSerializer.class, classModel);
+                        FieldModel fieldModel = new FieldModel(entry.serializerName, FseSerializer.class, classModel);
                         classModel.addField(fieldModel);
                         MethodModel setMethod = new MethodModel(classModel);
                         setMethod.setAccessLevel(MethodModel.AccessLevel.PUBLIC);
                         setMethod.setReturnType(void.class);
-                        setMethod.setMethodName("set" + entry.name);
+                        setMethod.setMethodName("set" + entry.serializerName);
                         setMethod.setParamterTypes(FseSerializer.class);
-                        setMethod.setBody(entry.name + "=$0;\r\n");
+                        setMethod.setBody(entry.serializerName + "=$0;\r\n");
                         classModel.putMethodModel(setMethod);
                         entries.add(entry);
-                        serializeBody.append(entry.name).append(".writeToBytesWithoutRegisterClass(_target.").append(buildGetMethodName(each)).append("(),$1,$2,$3);\r\n");
-                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("((" + SmcHelper.getReferenceName(each.getType(), classModel) + ")").append(entry.name).append(".readBytesWithoutRegisterClass($0,$1));\r\n");
+                        String propertyName = "_value_" + count;
+                        count++;
+                        serializeBody.append("Object " + propertyName + " = _target." + buildGetMethodName(each) + "();\r\n");
+                        serializeBody.append("if(" + propertyName + " == null ){byteArray.put(Fse.NULL);}");
+                        if (Modifier.isFinal(modifiers))
+                        {
+                            serializeBody.append("else{\r\n");
+                            serializeBody.append(entry.serializerName).append(".writeToBytes(").append(propertyName).append("," + Fse.USE_FIELD_TYPE + ",byteArray,fseContext,depth);\r\n");
+                            serializeBody.append("}\r\n");
+                        }
+                        else
+                        {
+                            serializeBody.append("else if(" + propertyName + ".getClass()==" + SmcHelper.getReferenceName(each.getType(), classModel) + ".class){\r\n");
+                            serializeBody.append(entry.serializerName).append(".writeToBytes(").append(propertyName).append("," + Fse.USE_FIELD_TYPE + ",byteArray,fseContext,depth);\r\n");
+                            serializeBody.append("}\r\n");
+                            serializeBody.append("else{\r\n");
+                            serializeBody.append("fseContext.serialize(" + propertyName + ",byteArray,depth);\r\n");
+                            serializeBody.append("}\r\n");
+                        }
+                        String flagName = "_flag_" + count;
+                        count++;
+                        deSerializeBody.append("int " + flagName + " = byteArray.readVarInt();\r\n");
+                        deSerializeBody.append("if(" + flagName + "==0){\r\n_target.").append(buildSetMethodName(each)).append("(null);\r\n}\r\n");
+                        deSerializeBody.append("else if(" + flagName + "==Fse.USE_FIELD_TYPE){\r\n");
+                        deSerializeBody.append("_target." + buildSetMethodName(each) + "((" + SmcHelper.getReferenceName(each.getType(), classModel) + ")" + entry.serializerName).append(".readBytes(byteArray,fseContext));\r\n");
+                        deSerializeBody.append("}\r\n");
+                        deSerializeBody.append("else if(" + flagName + "<0){\r\n");
+                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("((" + SmcHelper.getReferenceName(each.getType(), classModel) + ")fseContext.getObjectByIndex(0-" + flagName + "));\r\n");
+                        deSerializeBody.append("}\r\n");
+                        deSerializeBody.append("else{\r\n");
+                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("((" + SmcHelper.getReferenceName(each.getType(), classModel) + ")fseContext.getClassRegistry(" + flagName + ").getSerializer().readBytes(byteArray,fseContext));\r\n");
+                        deSerializeBody.append("}\r\n");
                     }
                     else
                     {
-                        serializeBody.append("$2.serialize(_target.").append(buildGetMethodName(each)).append("(),$1,$3);\r\n");
-                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("((" + SmcHelper.getReferenceName(each.getType(), classModel) + ")").append("Helper.deSerialize($0,$1));\r\n");
+                        serializeBody.append("fseContext.serialize(_target." + buildGetMethodName(each) + "(),byteArray,depth);\r\n");
+                        String flagName = "_flag_" + count;
+                        count++;
+                        deSerializeBody.append("int " + flagName + " = byteArray.readVarInt();\r\n");
+                        deSerializeBody.append("if(" + flagName + "==0){\r\n_target.").append(buildSetMethodName(each)).append("(null);\r\n}\r\n");
+                        deSerializeBody.append("else if(" + flagName + "<0){\r\n");
+                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("((" + SmcHelper.getReferenceName(each.getType(), classModel) + ")fseContext.getObjectByIndex(0-" + flagName + "));\r\n");
+                        deSerializeBody.append("}\r\n");
+                        deSerializeBody.append("else{\r\n");
+                        deSerializeBody.append("_target.").append(buildSetMethodName(each)).append("((" + SmcHelper.getReferenceName(each.getType(), classModel) + ")fseContext.getClassRegistry(" + flagName + ").getSerializer().readBytes(byteArray,fseContext));\r\n");
+                        deSerializeBody.append("}\r\n");
                     }
                 }
             }
@@ -138,7 +181,7 @@ public class CompileObjectSerializer extends CycleFlagSerializer implements FseS
             output = (Output) compile.newInstance();
             for (Entry entry : entries)
             {
-                Method setMethod = compile.getMethod("set" + entry.name, FseSerializer.class);
+                Method setMethod = compile.getMethod("set" + entry.serializerName, FseSerializer.class);
                 setMethod.invoke(output, entry.serializer);
             }
         }
@@ -155,7 +198,7 @@ public class CompileObjectSerializer extends CycleFlagSerializer implements FseS
         try
         {
             field.getDeclaringClass().getDeclaredMethod(getMethodName);
-            field.getDeclaringClass().getDeclaredMethod(setMethodName,field.getType());
+            field.getDeclaringClass().getDeclaredMethod(setMethodName, field.getType());
             return true;
         }
         catch (NoSuchMethodException e)
@@ -226,31 +269,9 @@ public class CompileObjectSerializer extends CycleFlagSerializer implements FseS
     }
 
     @Override
-    public void doWriteToBytesWithoutRegisterClass(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
-        byteArray.put((byte) 1);
-        output.serialize(o, byteArray, fseContext, depth);
-    }
-
-    @Override
     public Object readBytes(InternalByteArray byteArray, FseContext fseContext)
     {
         return output.deSerialize(byteArray, fseContext);
-    }
-
-    @Override
-    public Object readBytesWithoutRegisterClass(InternalByteArray byteArray, FseContext fseContext)
-    {
-        int flag = byteArray.readVarInt();
-        if (flag == 0)
-        {
-            return null;
-        }
-        else if (flag < 0)
-        {
-            return fseContext.getObjectByIndex(0 - flag);
-        }
-        return readBytes(byteArray, fseContext);
     }
 
     public static interface Output
@@ -262,7 +283,7 @@ public class CompileObjectSerializer extends CycleFlagSerializer implements FseS
 
     class Entry
     {
-        String        name;
+        String        serializerName;
         FseSerializer serializer;
     }
 }

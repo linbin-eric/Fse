@@ -20,15 +20,15 @@ public class ShortArraySerializer extends CycleFlagSerializer implements FseSeri
     public void writeToBytes(Object o, int classIndex, InternalByteArray byteArray, FseContext fseContext, int depth)
     {
         byteArray.writeVarInt(classIndex);
-        writeElement(o, byteArray, 0);
+        writeElement(o, byteArray);
     }
 
-    private void writeElement(Object o, InternalByteArray byteArray, int add)
+    private void writeElement(Object o, InternalByteArray byteArray)
     {
         if (primitive)
         {
             short[] array = (short[]) o;
-            byteArray.writePositive(array.length + add);
+            byteArray.writePositive(array.length );
             for (short v : array)
             {
                 byteArray.writeShort(v);
@@ -37,7 +37,7 @@ public class ShortArraySerializer extends CycleFlagSerializer implements FseSeri
         else
         {
             Short[] array = (Short[]) o;
-            byteArray.writePositive(array.length + add);
+            byteArray.writePositive(array.length );
             for (Short v : array)
             {
                 if (v == null)
@@ -87,27 +87,5 @@ public class ShortArraySerializer extends CycleFlagSerializer implements FseSeri
             }
             return array;
         }
-    }
-
-    @Override
-    public void writeToBytesWithoutRegisterClass(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
-        if (o == null)
-        {
-            byteArray.put((byte) 0);
-            return;
-        }
-        writeElement(o, byteArray, 1);
-    }
-
-    @Override
-    public Object readBytesWithoutRegisterClass(InternalByteArray byteArray, FseContext fseContext)
-    {
-        int len = byteArray.readPositive();
-        if (len == 0)
-        {
-            return null;
-        }
-        return readElement(byteArray, len - 1);
     }
 }

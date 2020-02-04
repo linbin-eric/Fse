@@ -26,16 +26,4 @@ public class SqlDateSerializer extends CycleFlagSerializer implements FseSeriali
         Date date = new Date(l);
         return date;
     }
-
-    @Override
-    public void writeToBytesWithoutRegisterClass(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Object readBytesWithoutRegisterClass(InternalByteArray byteArray, FseContext fseContext)
-    {
-        throw new UnsupportedOperationException();
-    }
 }

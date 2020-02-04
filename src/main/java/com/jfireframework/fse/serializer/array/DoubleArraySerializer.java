@@ -20,15 +20,15 @@ public class DoubleArraySerializer extends CycleFlagSerializer implements FseSer
     public void writeToBytes(Object o, int classIndex, InternalByteArray byteArray, FseContext fseContext, int depth)
     {
         byteArray.writeVarInt(classIndex);
-        writeElement(o, byteArray, 0);
+        writeElement(o, byteArray);
     }
 
-    private void writeElement(Object o, InternalByteArray byteArray, int add)
+    private void writeElement(Object o, InternalByteArray byteArray)
     {
         if (primitive)
         {
             double[] array = (double[]) o;
-            byteArray.writePositive(array.length + add);
+            byteArray.writePositive(array.length );
             for (double i : array)
             {
                 byteArray.writeDouble(i);
@@ -37,7 +37,7 @@ public class DoubleArraySerializer extends CycleFlagSerializer implements FseSer
         else
         {
             Double[] array = (Double[]) o;
-            byteArray.writePositive(array.length + add);
+            byteArray.writePositive(array.length );
             for (Double each : array)
             {
                 if (each == null)
@@ -51,17 +51,6 @@ public class DoubleArraySerializer extends CycleFlagSerializer implements FseSer
                 }
             }
         }
-    }
-
-    @Override
-    public void writeToBytesWithoutRegisterClass(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
-        if (o == null)
-        {
-            byteArray.put((byte) 0);
-            return;
-        }
-        writeElement(o, byteArray, 1);
     }
 
     @Override
@@ -100,14 +89,4 @@ public class DoubleArraySerializer extends CycleFlagSerializer implements FseSer
         }
     }
 
-    @Override
-    public Object readBytesWithoutRegisterClass(InternalByteArray byteArray, FseContext fseContext)
-    {
-        int len = byteArray.readPositive();
-        if (len == 0)
-        {
-            return null;
-        }
-        return readElement(byteArray, len - 1);
-    }
 }

@@ -54,16 +54,4 @@ public class HashSetSerializer extends CycleFlagSerializer implements FseSeriali
         }
         return set;
     }
-
-    @Override
-    public void writeToBytesWithoutRegisterClass(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Object readBytesWithoutRegisterClass(InternalByteArray byteArray, FseContext fseContext)
-    {
-        throw new UnsupportedOperationException();
-    }
 }

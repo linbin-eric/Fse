@@ -22,25 +22,4 @@ public class DoubleSerializer extends CycleFlagSerializer implements FseSerializ
         return byteArray.readDouble();
     }
 
-    @Override
-    public void writeToBytesWithoutRegisterClass(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
-        if (o == null)
-        {
-            byteArray.put((byte) 0);
-            return;
-        }
-        byteArray.put((byte) 1);
-        byteArray.writeDouble((Double) o);
-    }
-
-    @Override
-    public Object readBytesWithoutRegisterClass(InternalByteArray byteArray, FseContext fseContext)
-    {
-        if (byteArray.get() == 0)
-        {
-            return null;
-        }
-        return byteArray.readDouble();
-    }
 }

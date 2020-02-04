@@ -61,6 +61,7 @@ public class FseContext
         {
             withCycle = true;
             entry.getSerializer().writeToBytes(o, entry.getId(), byteArray, this, Fse.SUPPORT_CYCLE);
+            byteArray.setByte(0, Fse.WITH_CYCLE);
         }
         else
         {
@@ -76,6 +77,7 @@ public class FseContext
                 entry.getSerializer().supportCycle();
                 byteArray.setWritePosi(5);
                 entry.getSerializer().writeToBytes(o, entry.getId(), byteArray, this, Fse.SUPPORT_CYCLE);
+                byteArray.setByte(0, Fse.WITH_CYCLE);
             }
         }
     }

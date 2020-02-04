@@ -52,15 +52,4 @@ public class ArrayListSerializer extends CycleFlagSerializer implements FseSeria
         return arrayList;
     }
 
-    @Override
-    public Object readBytesWithoutRegisterClass(InternalByteArray byteArray, FseContext fseContext)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void writeToBytesWithoutRegisterClass(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
-        throw new UnsupportedOperationException();
-    }
 }

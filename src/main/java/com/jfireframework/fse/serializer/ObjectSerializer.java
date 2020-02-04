@@ -13,8 +13,6 @@ import java.util.List;
 
 public class ObjectSerializer extends CycleFlagSerializer implements FseSerializer
 {
-    public static final byte NULL     = 0;
-    public static final byte NOT_NULL = 1;
     Entry[] entries;
     private Class<?> type;
 
@@ -35,24 +33,24 @@ public class ObjectSerializer extends CycleFlagSerializer implements FseSerializ
     {
         Entry entry = new Entry();
         entry.field = field;
-        ValueAccessor valueAccessor = new ValueAccessor(field);
-        entry.accessor = valueAccessor;
+        entry.fieldType = field.getType();
+        entry.accessor = new ValueAccessor(field);
         Class<?> fieldType = field.getType();
         if (fieldType.isArray())
         {
             entry.array = true;
-            if (Modifier.isFinal(fieldType.getModifiers()))
-            {
-                entry.finalType = true;
-                entry.serializer = serializerFactory.getSerializer(fieldType);
-            }
+            entry.finalType = true;
+            entry.serializer = serializerFactory.getSerializer(fieldType);
         }
         else
         {
             entry.type = getType(fieldType);
-            if (entry.type == BuildInType.NOT_IN && Modifier.isFinal(fieldType.getModifiers()))
+            if (entry.type == BuildInType.OBJECT && (entry.fieldType.isInterface() == false && Modifier.isAbstract(entry.fieldType.getModifiers()) == false))
             {
-                entry.finalType = true;
+                if (Modifier.isFinal(fieldType.getModifiers()))
+                {
+                    entry.finalType = true;
+                }
                 FseSerializer serializer = serializerFactory.getSerializer(fieldType);
                 entry.serializer = serializer;
             }
@@ -95,7 +93,7 @@ public class ObjectSerializer extends CycleFlagSerializer implements FseSerializ
     {
         if (fieldType.isPrimitive() == false)
         {
-            return BuildInType.NOT_IN;
+            return BuildInType.OBJECT;
         }
         if (fieldType == int.class)
         {
@@ -138,11 +136,6 @@ public class ObjectSerializer extends CycleFlagSerializer implements FseSerializ
     @Override
     public void doWriteToBytes(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
     {
-        writeEntries(o, byteArray, fseContext, depth);
-    }
-
-    private void writeEntries(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
         for (Entry entry : entries)
         {
             if (entry.array == false)
@@ -157,23 +150,9 @@ public class ObjectSerializer extends CycleFlagSerializer implements FseSerializ
                     byteArray.put(Fse.NULL);
                     continue;
                 }
-                if (entry.finalType)
-                {
-                    entry.serializer.writeToBytesWithoutRegisterClass(entry.accessor.get(o), byteArray, fseContext, depth);
-                }
-                else
-                {
-                    fseContext.serialize(property, byteArray, depth);
-                }
+                entry.serializer.writeToBytes(entry.accessor.get(o), Fse.USE_FIELD_TYPE, byteArray, fseContext, depth);
             }
         }
-    }
-
-    @Override
-    public void doWriteToBytesWithoutRegisterClass(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
-        byteArray.put(Fse.USE_FIELD_TYPE);
-        writeEntries(o, byteArray, fseContext, depth);
     }
 
     @Override
@@ -189,37 +168,28 @@ public class ObjectSerializer extends CycleFlagSerializer implements FseSerializ
             }
             else
             {
+                int    flag = byteArray.readVarInt();
                 Object result;
-                if (entry.finalType)
+                if (flag == Fse.NULL)
                 {
-                    result = entry.serializer.readBytesWithoutRegisterClass(byteArray, fseContext);
+                    result = null;
+                }
+                else if (flag == Fse.USE_FIELD_TYPE)
+                {
+                    result = entry.serializer.readBytes(byteArray, fseContext);
+                }
+                else if (flag < 0)
+                {
+                    result = fseContext.getObjectByIndex(0 - flag);
                 }
                 else
                 {
-                    result = Helper.deSerialize(byteArray, fseContext);
+                    result = fseContext.getClassRegistry(flag).getSerializer().readBytes(byteArray, fseContext);
                 }
-                if (result != null)
-                {
-                    entry.accessor.setObject(instance, result);
-                }
+                entry.accessor.setObject(instance, result);
             }
         }
         return instance;
-    }
-
-    @Override
-    public Object readBytesWithoutRegisterClass(InternalByteArray byteArray, FseContext fseContext)
-    {
-        int flag = byteArray.readVarInt();
-        if (flag == 0)
-        {
-            return null;
-        }
-        else if (flag < 0)
-        {
-            return fseContext.getObjectByIndex(0 - flag);
-        }
-        return readBytes(byteArray, fseContext);
     }
 
     private void deSerializeProperty(InternalByteArray byteArray, FseContext fseContext, Object instance, Entry entry)
@@ -257,23 +227,26 @@ public class ObjectSerializer extends CycleFlagSerializer implements FseSerializ
                     entry.accessor.set(instance, false);
                 }
                 break;
-            case NOT_IN:
-                if (entry.finalType)
+            case OBJECT:
+                int flag = byteArray.readVarInt();
+                Object result;
+                if (flag == Fse.NULL)
                 {
-                    Object result = entry.serializer.readBytesWithoutRegisterClass(byteArray, fseContext);
-                    if (result != null)
-                    {
-                        entry.accessor.setObject(instance, result);
-                    }
+                    result = null;
+                }
+                else if (flag == Fse.USE_FIELD_TYPE)
+                {
+                    result = entry.serializer.readBytes(byteArray, fseContext);
+                }
+                else if (flag < 0)
+                {
+                    result = fseContext.getObjectByIndex(0 - flag);
                 }
                 else
                 {
-                    Object result = Helper.deSerialize(byteArray, fseContext);
-                    if (result != null)
-                    {
-                        entry.accessor.setObject(instance, result);
-                    }
+                    result = fseContext.getClassRegistry(flag).getSerializer().readBytes(byteArray, fseContext);
                 }
+                entry.accessor.setObject(instance, result);
                 break;
         }
     }
@@ -313,15 +286,20 @@ public class ObjectSerializer extends CycleFlagSerializer implements FseSerializ
                     byteArray.put((byte) 1);
                 }
                 break;
-            case NOT_IN:
-                Object o1 = entry.accessor.get(o);
-                if (entry.finalType)
+            case OBJECT:
+                Object property = entry.accessor.get(o);
+                if (property == null)
                 {
-                    entry.serializer.writeToBytesWithoutRegisterClass(o1, byteArray, fseContext, depth);
+                    byteArray.put(Fse.NULL);
+                    break;
+                }
+                if (entry.finalType || property.getClass() == entry.fieldType)
+                {
+                    entry.serializer.writeToBytes(property, Fse.USE_FIELD_TYPE, byteArray, fseContext, depth);
                 }
                 else
                 {
-                    fseContext.serialize(o1, byteArray, depth);
+                    fseContext.serialize(property, byteArray, depth);
                 }
                 break;
         }
@@ -330,12 +308,13 @@ public class ObjectSerializer extends CycleFlagSerializer implements FseSerializ
     enum BuildInType
     {
         INT, BYTE, CHAR, BOOLEAN, FLOAT, LONG, SHORT, DOUBLE,//
-        NOT_IN
+        OBJECT
     }
 
     class Entry
     {
         Field         field;
+        Class         fieldType;
         boolean       array     = false;
         boolean       finalType = false;
         BuildInType   type;

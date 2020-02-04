@@ -10,7 +10,6 @@ public class ArraySerializer extends CycleFlagSerializer implements FseSerialize
     private boolean       componentTypeFinal = false;
     private FseSerializer serializer;
     private Class<?>      componentType;
-    private boolean       primitiveOrWrapper = false;
 
     @Override
     public void init(Class<?> type, SerializerFactory serializerFactory)
@@ -20,39 +19,6 @@ public class ArraySerializer extends CycleFlagSerializer implements FseSerialize
         {
             componentTypeFinal = true;
             serializer = serializerFactory.getSerializer(componentType);
-        }
-        while (type.isArray())
-        {
-            type = type.getComponentType();
-        }
-        if (type.isPrimitive() || type == Integer.class//
-                || type == Short.class//
-                || type == Byte.class//
-                || type == Boolean.class//
-                || type == Character.class//
-                || type == Double.class//
-                || type == Float.class//
-                || type == Long.class//
-                || type == String.class)
-        {
-            primitiveOrWrapper = true;
-        }
-    }
-
-    @Override
-    public void writeToBytes(Object o, int classIndex, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
-        if (primitiveOrWrapper)
-        {
-            byteArray.writeVarInt(classIndex);
-            int length = ((Object[]) o).length;
-            byteArray.writePositive(length);
-            writeElement((Object[]) o, byteArray, fseContext, -1);
-            return;
-        }
-        else
-        {
-            super.writeToBytes(o, classIndex, byteArray, fseContext, depth);
         }
     }
 
@@ -70,7 +36,12 @@ public class ArraySerializer extends CycleFlagSerializer implements FseSerialize
         {
             for (Object each : o)
             {
-                serializer.writeToBytesWithoutRegisterClass(each, byteArray, fseContext, depth);
+                if (each == null)
+                {
+                    byteArray.put(Fse.NULL);
+                    continue;
+                }
+                serializer.writeToBytes(each, Fse.USE_FIELD_TYPE, byteArray, fseContext, depth);
             }
         }
         else
@@ -83,14 +54,6 @@ public class ArraySerializer extends CycleFlagSerializer implements FseSerialize
     }
 
     @Override
-    public void doWriteToBytesWithoutRegisterClass(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
-        int length = ((Object[]) o).length;
-        byteArray.writeVarInt(length + 1);
-        writeElement((Object[]) o, byteArray, fseContext, depth);
-    }
-
-    @Override
     public Object readBytes(InternalByteArray byteArray, FseContext fseContext)
     {
         int len = byteArray.readPositive();
@@ -100,15 +63,29 @@ public class ArraySerializer extends CycleFlagSerializer implements FseSerialize
     private Object readElement(InternalByteArray byteArray, FseContext fseContext, int len)
     {
         Object[] instance = (Object[]) Array.newInstance(componentType, len);
-        if (primitiveOrWrapper == false)
-        {
-            fseContext.collectObject(instance);
-        }
+        fseContext.collectObject(instance);
         if (componentTypeFinal)
         {
             for (int i = 0; i < len; i++)
             {
-                instance[i] = serializer.readBytesWithoutRegisterClass(byteArray, fseContext);
+                //读取 Fse.USE_FIELD_TYPE 标记
+                int flag = byteArray.readVarInt();
+                if (flag == Fse.NULL)
+                {
+                    instance[i] = null;
+                }
+                else if (flag == Fse.USE_FIELD_TYPE)
+                {
+                    instance[i] = serializer.readBytes(byteArray, fseContext);
+                }
+                else if (flag < 0)
+                {
+                    instance[i] = fseContext.getObjectByIndex(0 - flag);
+                }
+                else
+                {
+                    throw new IllegalStateException("不应该出现此种情况");
+                }
             }
         }
         else
@@ -119,20 +96,5 @@ public class ArraySerializer extends CycleFlagSerializer implements FseSerialize
             }
         }
         return instance;
-    }
-
-    @Override
-    public Object readBytesWithoutRegisterClass(InternalByteArray byteArray, FseContext fseContext)
-    {
-        int len = byteArray.readVarInt();
-        if (len < 0)
-        {
-            return fseContext.getObjectByIndex(0 - len);
-        }
-        if (len == 0)
-        {
-            return null;
-        }
-        return readElement(byteArray, fseContext, len - 1);
     }
 }

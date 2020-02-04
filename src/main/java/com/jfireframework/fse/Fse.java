@@ -22,8 +22,7 @@ public class Fse
         {
             throw new IllegalArgumentException();
         }
-        byteArray.put(WITH_CYCLE);
-        ((InternalByteArray) byteArray).skipWrite(4);
+        ((InternalByteArray) byteArray).skipWrite(5);
         fseContext.startSerilaize(o, (InternalByteArray) byteArray);
         int mark = byteArray.getWritePosi();
         byteArray.setWritePosi(1);

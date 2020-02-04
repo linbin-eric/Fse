@@ -27,15 +27,4 @@ public class UtilDateSerializer extends CycleFlagSerializer implements FseSerial
         return date;
     }
 
-    @Override
-    public void writeToBytesWithoutRegisterClass(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Object readBytesWithoutRegisterClass(InternalByteArray byteArray, FseContext fseContext)
-    {
-        throw new UnsupportedOperationException();
-    }
 }

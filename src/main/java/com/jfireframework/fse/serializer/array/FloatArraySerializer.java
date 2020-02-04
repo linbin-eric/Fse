@@ -20,15 +20,15 @@ public class FloatArraySerializer extends CycleFlagSerializer implements FseSeri
     public void writeToBytes(Object o, int classIndex, InternalByteArray byteArray, FseContext fseContext, int depth)
     {
         byteArray.writeVarInt(classIndex);
-        writeElement(o, byteArray, 0);
+        writeElement(o, byteArray);
     }
 
-    private void writeElement(Object o, InternalByteArray byteArray, int add)
+    private void writeElement(Object o, InternalByteArray byteArray)
     {
         if (primitive)
         {
             float[] array = (float[]) o;
-            byteArray.writePositive(array.length + add);
+            byteArray.writePositive(array.length);
             for (float i : array)
             {
                 byteArray.writeFloat(i);
@@ -37,7 +37,7 @@ public class FloatArraySerializer extends CycleFlagSerializer implements FseSeri
         else
         {
             Float[] array = (Float[]) o;
-            byteArray.writePositive(array.length + add);
+            byteArray.writePositive(array.length );
             for (Float each : array)
             {
                 if (each == null)
@@ -53,16 +53,6 @@ public class FloatArraySerializer extends CycleFlagSerializer implements FseSeri
         }
     }
 
-    @Override
-    public void writeToBytesWithoutRegisterClass(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
-        if (o == null)
-        {
-            byteArray.writeVarInt(0);
-            return;
-        }
-        writeElement(o, byteArray, 1);
-    }
 
     @Override
     public Object readBytes(InternalByteArray byteArray, FseContext fseContext)
@@ -100,14 +90,4 @@ public class FloatArraySerializer extends CycleFlagSerializer implements FseSeri
         }
     }
 
-    @Override
-    public Object readBytesWithoutRegisterClass(InternalByteArray byteArray, FseContext fseContext)
-    {
-        int len = byteArray.readPositive();
-        if (len == 0)
-        {
-            return null;
-        }
-        return readElement(byteArray, len - 1);
-    }
 }

@@ -11,7 +11,7 @@ public class SimpleTest
     {
         SimplePerson person = new SimplePerson();
         person.setName("林斌123as");
-        person.setAge(27);
+        person.setAge(28);
         person.setWeight(15.65f);
         System.out.println(person);
         Fse       licp = new Fse();

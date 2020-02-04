@@ -22,25 +22,4 @@ public class LongSerializer extends CycleFlagSerializer implements FseSerializer
         return byteArray.readVarLong();
     }
 
-    @Override
-    public void writeToBytesWithoutRegisterClass(Object o, InternalByteArray byteArray, FseContext fseContext, int depth)
-    {
-        if (o == null)
-        {
-            byteArray.put((byte) 0);
-            return;
-        }
-        byteArray.put((byte) 1);
-        byteArray.writeVarLong((Long) o);
-    }
-
-    @Override
-    public Object readBytesWithoutRegisterClass(InternalByteArray byteArray, FseContext fseContext)
-    {
-        if (byteArray.get() == 0)
-        {
-            return null;
-        }
-        return byteArray.readVarLong();
-    }
 }

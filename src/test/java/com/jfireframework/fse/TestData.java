@@ -105,4 +105,184 @@ public class TestData implements Serializable
             return false;
         }
     }
+
+    public int getA()
+    {
+        return a;
+    }
+
+    public void setA(int a)
+    {
+        this.a = a;
+    }
+
+    public boolean isB()
+    {
+        return b;
+    }
+
+    public void setB(boolean b)
+    {
+        this.b = b;
+    }
+
+    public char getC()
+    {
+        return c;
+    }
+
+    public void setC(char c)
+    {
+        this.c = c;
+    }
+
+    public byte getD()
+    {
+        return d;
+    }
+
+    public void setD(byte d)
+    {
+        this.d = d;
+    }
+
+    public short getE()
+    {
+        return e;
+    }
+
+    public void setE(short e)
+    {
+        this.e = e;
+    }
+
+    public long getF()
+    {
+        return f;
+    }
+
+    public void setF(long f)
+    {
+        this.f = f;
+    }
+
+    public double getG()
+    {
+        return g;
+    }
+
+    public void setG(double g)
+    {
+        this.g = g;
+    }
+
+    public float getH()
+    {
+        return h;
+    }
+
+    public void setH(float h)
+    {
+        this.h = h;
+    }
+
+    public String getI()
+    {
+        return i;
+    }
+
+    public void setI(String i)
+    {
+        this.i = i;
+    }
+
+    public int[] getJ()
+    {
+        return j;
+    }
+
+    public void setJ(int[] j)
+    {
+        this.j = j;
+    }
+
+    public boolean[] getK()
+    {
+        return k;
+    }
+
+    public void setK(boolean[] k)
+    {
+        this.k = k;
+    }
+
+    public char[] getL()
+    {
+        return l;
+    }
+
+    public void setL(char[] l)
+    {
+        this.l = l;
+    }
+
+    public byte[] getM()
+    {
+        return m;
+    }
+
+    public void setM(byte[] m)
+    {
+        this.m = m;
+    }
+
+    public short[] getN()
+    {
+        return n;
+    }
+
+    public void setN(short[] n)
+    {
+        this.n = n;
+    }
+
+    public long[] getO()
+    {
+        return o;
+    }
+
+    public void setO(long[] o)
+    {
+        this.o = o;
+    }
+
+    public double[] getP()
+    {
+        return p;
+    }
+
+    public void setP(double[] p)
+    {
+        this.p = p;
+    }
+
+    public float[] getQ()
+    {
+        return q;
+    }
+
+    public void setQ(float[] q)
+    {
+        this.q = q;
+    }
+
+    public String[] getR()
+    {
+        return r;
+    }
+
+    public void setR(String[] r)
+    {
+        this.r = r;
+    }
 }
