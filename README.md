@@ -20,7 +20,7 @@
 <dependency>
 	<groupId>com.jfireframework</groupId>
     <artifactId>fse</artifactId>
-    <version>aegean-1.0</version>
+    <version>aegean2.0</version>
 </dependency>
 ```
 
@@ -43,3 +43,6 @@ TestData result = (TestData) fse.deSerialize(buf);
 assertTrue(result.equals(data));
 ```
 
+## 注意
+
+2.0 版本引入了新的优化机制，产生的字节数据与 1.x 系列有一定区别，两者之间无法兼容。建议直接使用 2.0 版本，性能更好。

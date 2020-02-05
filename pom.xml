@@ -42,7 +42,7 @@
         <dependency>
             <groupId>com.jfireframework</groupId>
             <artifactId>baseutil</artifactId>
-            <version>aegean-1.1</version>
+            <version>aegean-1.2</version>
         </dependency>
         <dependency>
             <groupId>com.esotericsoftware</groupId>
