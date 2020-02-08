@@ -18,10 +18,11 @@
 
 ```xml
 <dependency>
-	<groupId>com.jfireframework</groupId>
+    <groupId>com.jfireframework</groupId>
     <artifactId>fse</artifactId>
-    <version>aegean2.0</version>
+    <version>aegean-2.0</version>
 </dependency>
+
 ```
 
 API 使用方式如下
